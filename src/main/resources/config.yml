@@ -1,0 +1,20 @@
+#
+# Server ID and UID can be configured automatically using /mcmetrics setup
+# More information: https://docs.mcmetrics.net/quickstart
+#
+server_id: ""
+uid: ""
+
+# requires restart
+enable-bstats: true
+# requires restart
+enable-sentry: false
+
+#
+# Do not edit any of these values, they are set automatically and used by the plugin
+#
+setup-complete: false
+record-sessions: true
+record-pings: true
+record-payments: true
+execute-experiments: true

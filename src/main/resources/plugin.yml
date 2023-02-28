@@ -1,0 +1,17 @@
+name: "MCMetrics"
+version: '${project.version}'
+main: me.kicksquare.mcmspigot.MCMSpigot
+api-version: 1.17
+commands:
+  mcmetrics:
+    aliases: [mcm, metrics]
+    description: MCMetrics main command
+  /mcmetrics:
+    description: MCMetrics main command
+  mcmpayment:
+    description: Internal command used to generate payment log [MCMetrics]
+  mcmexperiment:
+    description: Internal command used to trigger an ab test [MCMetrics]
+
+
+softdepend: [PlaceholderAPI, BuyCraftX, CraftingStore]
