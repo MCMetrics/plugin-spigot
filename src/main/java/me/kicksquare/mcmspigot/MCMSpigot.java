@@ -2,9 +2,9 @@ package me.kicksquare.mcmspigot;
 
 import io.sentry.Sentry;
 import me.kicksquare.mcmspigot.commands.ExperimentCommand;
-import me.kicksquare.mcmspigot.commands.PaymentCommand;
 import me.kicksquare.mcmspigot.commands.MCMCommand;
 import me.kicksquare.mcmspigot.commands.MCMetricsTabCompleter;
+import me.kicksquare.mcmspigot.commands.PaymentCommand;
 import me.kicksquare.mcmspigot.listeners.ExperimentListener;
 import me.kicksquare.mcmspigot.listeners.PlayerSessionListener;
 import me.kicksquare.mcmspigot.papi.PapiExtension;
@@ -20,10 +20,13 @@ import java.util.ArrayList;
 @SuppressWarnings("DataFlowIssue")
 public final class MCMSpigot extends JavaPlugin {
 
+    private static MCMSpigot plugin; // used in ExperimentUtil
     private SessionQueue sessionQueue = new SessionQueue();
     private ArrayList<Experiment> experiments = new ArrayList<>();
 
-    private static MCMSpigot plugin; // used in ExperimentUtil
+    public static MCMSpigot getPlugin() {
+        return plugin;
+    }
 
     @Override
     public void onEnable() {
@@ -37,37 +40,26 @@ public final class MCMSpigot extends JavaPlugin {
         getCommand("mcmetrics").setTabCompleter(new MCMetricsTabCompleter());
         getCommand("/mcmetrics").setExecutor(new MCMCommand(this));
 
-        if (SetupUtil.shouldRecordSessions()) {
-            Bukkit.getPluginManager().registerEvents(new PlayerSessionListener(this), this);
-        }
-
-        if (SetupUtil.shouldExecuteExperiments()) {
-            Bukkit.getPluginManager().registerEvents(new ExperimentListener(this), this);
-            getCommand("mcmexperiment").setExecutor(new ExperimentCommand(this));
-        }
-
-        if (SetupUtil.shouldRecordPayments()) {
-            getCommand("mcmpayment").setExecutor(new PaymentCommand(this));
-        }
+        Bukkit.getPluginManager().registerEvents(new PlayerSessionListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new ExperimentListener(this), this);
+        getCommand("mcmexperiment").setExecutor(new ExperimentCommand(this));
+        getCommand("mcmpayment").setExecutor(new PaymentCommand(this));
 
         MCMCommand.reloadConfigAndFetchData();
 
         // upload player count every 5 minutes
-        if (SetupUtil.shouldRecordPings()) {
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-                // need to do this check in case of a config reload without reload
-                if (!SetupUtil.shouldRecordPings()) return;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            // need to do this check in case of a config reload without reload
+            if (!SetupUtil.shouldRecordPings()) return;
 
-                try {
-                    System.out.println("uploading player count");
-                    final String bodyString = "{\"playercount\": \"" + Bukkit.getOnlinePlayers().size() + "\"}";
-                    HttpUtil.makeAsyncPostRequest("https://dashboard.mcmetrics.net/api/pings/insertPing", bodyString, HttpUtil.getAuthHeadersFromConfig());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }, 0, 20 * 60 * 5);
-        }
-
+            try {
+                System.out.println("uploading player count");
+                final String bodyString = "{\"playercount\": \"" + Bukkit.getOnlinePlayers().size() + "\"}";
+                HttpUtil.makeAsyncPostRequest("https://dashboard.mcmetrics.net/api/pings/insertPing", bodyString, HttpUtil.getAuthHeadersFromConfig());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 0, 20 * 60 * 5);
 
         // enable bstats
         if (getConfig().getBoolean("enable-bstats")) {
@@ -80,7 +72,7 @@ public final class MCMSpigot extends JavaPlugin {
         }
 
         // enable sentry error reporting
-        if(getConfig().getBoolean("enable-sentry")) {
+        if (getConfig().getBoolean("enable-sentry")) {
             Sentry.init(options -> {
                 options.setDsn("https://b157b0cab7ba42cd92c83a583e57af66@o4504532201046017.ingest.sentry.io/4504540638347264");
                 //todo We recommend adjusting this value in production.
@@ -93,7 +85,11 @@ public final class MCMSpigot extends JavaPlugin {
         }
     }
 
-    public SessionQueue getSessionQueue() { return sessionQueue; }
-    public ArrayList<Experiment> getExperiments() { return experiments; }
-    public static MCMSpigot getPlugin() { return plugin; }
+    public SessionQueue getSessionQueue() {
+        return sessionQueue;
+    }
+
+    public ArrayList<Experiment> getExperiments() {
+        return experiments;
+    }
 }
