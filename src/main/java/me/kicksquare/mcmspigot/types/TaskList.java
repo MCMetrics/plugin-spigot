@@ -30,7 +30,7 @@ public class TaskList {
 
     public static void fetchTasks() {
         // fetch tasks for this server and save them to memory and config
-        HttpUtil.makeAsyncGetRequest("http://localhost:3000/api/server/getServerTasks", HttpUtil.getAuthHeadersFromConfig()).thenAccept(response -> {
+        HttpUtil.makeAsyncGetRequest("https://dashboard.mcmetrics.net/api/server/getServerTasks", HttpUtil.getAuthHeadersFromConfig()).thenAccept(response -> {
             if (response != null) {
                 if (response.contains("ERROR_")) {
                     plugin.getLogger().severe("Failed to fetch tasks from server. Response: " + response);

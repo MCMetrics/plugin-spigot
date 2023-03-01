@@ -83,6 +83,6 @@ public class PlayerSessionListener implements Listener {
 
         System.out.println("Uploading session now... " + jsonString);
 
-        HttpUtil.makeAsyncPostRequest("http://localhost:3000/api/sessions/insertSession", jsonString, HttpUtil.getAuthHeadersFromConfig());
+        HttpUtil.makeAsyncPostRequest("https://dashboard.mcmetrics.net/api/sessions/insertSession", jsonString, HttpUtil.getAuthHeadersFromConfig());
     }
 }
