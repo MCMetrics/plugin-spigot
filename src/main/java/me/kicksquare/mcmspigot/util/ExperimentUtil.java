@@ -37,8 +37,6 @@ public class ExperimentUtil {
 
         // if consistentVariantForUuid is true, then try to get the consistent variant (random is fallback)
         if (experiment.isConsistentVariantForUuid()) {
-            Bukkit.broadcastMessage("consistent variant");
-
             double probability = RandomUtil.getProbabilityFromUuid(p.getUniqueId().toString());
 
             double maxProbability = 0;
