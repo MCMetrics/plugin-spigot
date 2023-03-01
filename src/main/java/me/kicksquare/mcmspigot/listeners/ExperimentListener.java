@@ -27,7 +27,6 @@ public class ExperimentListener implements Listener {
         Player p = e.getPlayer();
 
         ArrayList<Experiment> experiments = plugin.getExperiments();
-        System.out.println("1");
         for (Experiment experiment : experiments) {
             if (experiment.trigger == ExperimentTrigger.JOIN || (experiment.trigger == ExperimentTrigger.FIRST_JOIN && !p.hasPlayedBefore())) {
                 ExperimentUtil.executeActions(p, experiment);
