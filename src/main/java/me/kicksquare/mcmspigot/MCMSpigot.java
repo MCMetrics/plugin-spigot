@@ -75,8 +75,7 @@ public final class MCMSpigot extends JavaPlugin {
         if (getConfig().getBoolean("enable-sentry")) {
             Sentry.init(options -> {
                 options.setDsn("https://b157b0cab7ba42cd92c83a583e57af66@o4504532201046017.ingest.sentry.io/4504540638347264");
-                //todo We recommend adjusting this value in production.
-                options.setTracesSampleRate(1.0);
+                options.setTracesSampleRate(0.1);
                 options.setDebug(false);
             });
 
@@ -92,4 +91,6 @@ public final class MCMSpigot extends JavaPlugin {
     public ArrayList<Experiment> getExperiments() {
         return experiments;
     }
+
+    //todo upload all sessions in queue on disable
 }
