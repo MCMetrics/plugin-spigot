@@ -3,6 +3,7 @@ package me.kicksquare.mcmspigot.commands;
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.types.TaskList;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
+import me.kicksquare.mcmspigot.types.experiment.ExperimentCondition;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentVariant;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentAction;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
@@ -148,6 +149,45 @@ public class MCMCommand implements CommandExecutor {
                     sender.sendMessage(colorize("&7 • &a" + experiment.name + "&8&o (no variants)"));
                 } else {
                     sender.sendMessage(colorize("&7 • &7'&a" + experiment.name + "&7'&8&o (" + experiment.variants.length + " variants)"));
+
+                    if (experiment.conditions != null && experiment.conditions.length > 0) {
+                        sender.sendMessage(colorize("&7   • " + "Conditions:"));
+                        for (ExperimentCondition condition : experiment.conditions) {
+                            switch (condition.type) {
+                                case PAPI:
+                                    String comparisonType = "equals";
+                                    switch (condition.comparisonType) {
+                                        case EQUALS:
+                                            comparisonType = "equals";
+                                            break;
+                                        case CONTAINS:
+                                            comparisonType = "contains";
+                                            break;
+                                        case GREATER_THAN:
+                                            comparisonType = "greater than";
+                                            break;
+                                        case LESS_THAN:
+                                            comparisonType = "less than";
+                                            break;
+                                        case NOT_CONTAINS:
+                                            comparisonType = "does not contain";
+                                            break;
+
+                                    }
+
+                                    sender.sendMessage(colorize("&7     • &7Placeholder &a" + condition.comparisonValue + " &7" + comparisonType + " &a" + condition.value));
+                                    break;
+                                case JAVA:
+                                    sender.sendMessage(colorize("&7     • &7Only " + "&aJava " + "&7players"));
+                                    break;
+                                case BEDROCK:
+                                    sender.sendMessage(colorize("&7     • &7Only " + "&aBedrock " + "&7players"));
+                                    break;
+                            }
+                        }
+                    }
+
+
                     sender.sendMessage(colorize("&7   • " + "Variants:"));
                     for (ExperimentVariant variant : experiment.variants) {
                         if (variant.actionType == ExperimentAction.CONTROL) {

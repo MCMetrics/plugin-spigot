@@ -1,17 +1,24 @@
 #
-# Server ID and UID can be configured automatically using /mcmetrics setup
+# Server ID and UID can be configured automatically using /mcmetrics setup.
 # More information: https://docs.mcmetrics.net/quickstart
 #
 server_id: ""
 uid: ""
 
-# requires restart
+# Should the plugin send anonymous usage data to BStats? This helps us track plugin usage across servers.
+# This option needs a restart to take effect.
 enable-bstats: true
-# requires restart
+
+# Should the plugin send anonymous error reports to Sentry? This helps us track and fix plugin errors.
+# This option needs a restart to take effect.
 enable-sentry: false
 
+# The prefix used to determine whether a player is on Bedrock using GeyserMC.
+# Currently used for the "Bedrock/Java users" experiment condition.
+bedrock-prefix: "*"
+
 #
-# Do not edit any of these values, they are set automatically and used by the plugin
+# Do not edit any of these values, they are set/updated automatically and used internally.
 #
 setup-complete: false
 record-sessions: true

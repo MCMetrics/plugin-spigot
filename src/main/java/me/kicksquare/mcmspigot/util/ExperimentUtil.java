@@ -2,9 +2,11 @@ package me.kicksquare.mcmspigot.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.types.Session;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
+import me.kicksquare.mcmspigot.types.experiment.ExperimentCondition;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentSession;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentVariant;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentAction;
@@ -18,12 +20,51 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
+
 public class ExperimentUtil {
 
     private static MCMSpigot plugin = MCMSpigot.getPlugin();
 
     public static ExperimentVariant executeActions(Player p, Experiment experiment) {
         if (!plugin.getConfig().getBoolean("setup-complete")) return null;
+
+        // loop through conditions; if any condition is not met, return
+        String bedrockPrefix = plugin.getConfig().getString("bedrock-prefix");
+        String playerName = p.getName();
+        for (ExperimentCondition condition : experiment.conditions) {
+            switch (condition.type) {
+                case PAPI:
+                    String placeholder = condition.comparisonValue;
+                    String value = condition.value; // the desired value set in the dashboard
+                    String papiResult = PlaceholderAPI.setPlaceholders(p, placeholder);
+
+                    switch (condition.comparisonType) {
+                        case EQUALS:
+                            if (!papiResult.equals(value)) return null;
+                            break;
+                        case CONTAINS:
+                            if (!papiResult.contains(value)) return null;
+                            break;
+                        case NOT_CONTAINS:
+                            if (papiResult.contains(value)) return null;
+                            break;
+                        case GREATER_THAN:
+                            if (Integer.parseInt(placeholder) <= Integer.parseInt(value)) return null;
+                            break;
+                        case LESS_THAN:
+                            if (Integer.parseInt(placeholder) >= Integer.parseInt(value)) return null;
+                            break;
+                    }
+                    break;
+                case BEDROCK:
+                    if (!playerName.startsWith(bedrockPrefix)) return null;
+                    break;
+                case JAVA:
+                    if (playerName.startsWith(bedrockPrefix)) return null;
+                    break;
+            }
+        }
 
         ExperimentVariant[] variants = experiment.getVariants();
 
@@ -79,7 +120,7 @@ public class ExperimentUtil {
             case PLAYER_COMMAND:
                 p.performCommand(replacedPlaceholders);
             case CHAT_MESSAGE:
-                p.sendMessage(replacedPlaceholders);
+                p.sendMessage(colorize(replacedPlaceholders));
             case CONSOLE_COMMAND:
                 // dont execute empty commands
                 if (Objects.equals(replacedPlaceholders, "") || replacedPlaceholders == null) {
@@ -94,7 +135,6 @@ public class ExperimentUtil {
             playerSession.addExperimentSession(new ExperimentSession(p.getUniqueId().toString(), experiment.id, selectedVariant.variant));
             plugin.getSessionQueue().addSession(p.getUniqueId(), playerSession);
         }
-
 
         return selectedVariant;
     }
