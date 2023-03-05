@@ -148,11 +148,14 @@ public class ExperimentUtil {
                     try {
                         Experiment[] experiments = mapper.readValue(result, Experiment[].class);
                         for (Experiment experiment : experiments) {
-                            plugin.getExperiments().add(experiment);
+                            // only add active experiments
+                            if (experiment.active) {
+                                plugin.getExperiments().add(experiment);
+                            }
                         }
-                        System.out.println("Success! Number of ab tests: " + plugin.getExperiments().size());
+                        System.out.println("Success! Number of experiments: " + plugin.getExperiments().size());
                     } catch (JsonProcessingException ex) {
-                        System.out.println("Error occurred while fetching ab tests:");
+                        System.out.println("Error occurred while fetching experiments:");
                         ex.printStackTrace();
                         throw new RuntimeException(ex);
                     }
