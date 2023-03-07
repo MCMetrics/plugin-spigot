@@ -22,7 +22,7 @@ public class PaymentCommand implements CommandExecutor {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private MCMSpigot plugin;
+    private final MCMSpigot plugin;
 
     public PaymentCommand(MCMSpigot plugin) {
         this.plugin = plugin;
@@ -78,7 +78,7 @@ public class PaymentCommand implements CommandExecutor {
         if (p != null) {
             ArrayList<Experiment> experiments = plugin.getExperiments();
             for (Experiment experiment : experiments) {
-                if(experiment.trigger == ExperimentTrigger.PURCHASE) {
+                if (experiment.trigger == ExperimentTrigger.PURCHASE) {
                     ExperimentUtil.executeActions(p, experiment);
                 }
             }

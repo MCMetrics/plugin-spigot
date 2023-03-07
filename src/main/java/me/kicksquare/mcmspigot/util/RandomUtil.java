@@ -30,6 +30,7 @@ public class RandomUtil {
     /**
      * Generates a random number between 0.0 and 1.0 inclusive based on the given UUID.
      * The output is random, but consistent for the same UUID.
+     *
      * @param uuid The UUID of the player
      * @return A random double between 0.0 and 1.0 inclusive based on the provided UUID
      */

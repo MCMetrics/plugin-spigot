@@ -82,6 +82,12 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+
+        <!--      jitpack (for simplixstorage and more)  -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -137,11 +143,18 @@
         </dependency>
 
 
-<!--        sentry error logging-->
+        <!--        sentry error logging-->
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
             <version>6.12.1</version>
+        </dependency>
+
+        <!--        config lib-->
+        <dependency>
+            <groupId>com.github.simplix-softworks</groupId>
+            <artifactId>simplixstorage</artifactId>
+            <version>3.2.5</version>
         </dependency>
 
     </dependencies>

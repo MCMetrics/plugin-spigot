@@ -51,7 +51,7 @@ public class PapiExtension extends PlaceholderExpansion {
                 if (experiment.trigger == ExperimentTrigger.PAPI) {
                     ExperimentVariant selectedVariant = ExperimentUtil.executeActions(player.getPlayer(), experiment);
                     // return the variant id that was chosen for the user
-                    if(selectedVariant != null) {
+                    if (selectedVariant != null) {
                         return String.valueOf(selectedVariant.variant);
                     }
                 } else {

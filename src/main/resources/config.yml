@@ -16,12 +16,3 @@ enable-sentry: false
 # The prefix used to determine whether a player is on Bedrock using GeyserMC.
 # Currently used for the "Bedrock/Java users" experiment condition.
 bedrock-prefix: "*"
-
-#
-# Do not edit any of these values, they are set/updated automatically and used internally.
-#
-setup-complete: false
-record-sessions: true
-record-pings: true
-record-payments: true
-execute-experiments: true

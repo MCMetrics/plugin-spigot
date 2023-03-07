@@ -23,8 +23,8 @@ import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
 
 public class MCMCommand implements CommandExecutor {
 
-    private MCMSpigot plugin;
-    private static MCMSpigot staticPlugin = MCMSpigot.getPlugin();
+    private final MCMSpigot plugin;
+    private static final MCMSpigot staticPlugin = MCMSpigot.getPlugin();
 
     public MCMCommand(MCMSpigot plugin) {
         this.plugin = plugin;
@@ -63,8 +63,7 @@ public class MCMCommand implements CommandExecutor {
             return true;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("enablesentry")) {
             sender.sendMessage("Enabling Sentry...");
-            plugin.getConfig().set("enable-sentry", true);
-            plugin.saveConfig();
+            plugin.getMainConfig().set("enable-sentry", true);
             plugin.reloadConfig();
             sender.sendMessage(colorize("&a&lSentry Enabled! &r&7Thank you for helping us improve the plugin!"));
             return true;
@@ -113,10 +112,9 @@ public class MCMCommand implements CommandExecutor {
             sender.sendMessage("Invalid server ID. Server ID must be 36 characters long.");
             return true;
         } else {
-            plugin.getConfig().set("uid", uid);
-            plugin.getConfig().set("server_id", server_id);
-            plugin.getConfig().set("setup-complete", true);
-            plugin.saveConfig();
+            plugin.getMainConfig().set("uid", uid);
+            plugin.getMainConfig().set("server_id", server_id);
+            plugin.getDataConfig().set("setup-complete", true);
             plugin.reloadConfig();
 
             CompletableFuture.supplyAsync(() -> {

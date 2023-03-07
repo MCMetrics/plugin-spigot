@@ -6,11 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
 public class TaskList {
-    private static MCMSpigot plugin = MCMSpigot.getPlugin();
+    private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 
     @JsonProperty("recordSessions")
     public boolean recordSessions;
@@ -41,11 +38,10 @@ public class TaskList {
                     ObjectMapper mapper = new ObjectMapper();
 
                     TaskList tasks = mapper.readValue(response, TaskList.class);
-                    plugin.getConfig().set("record-sessions", tasks.recordSessions);
-                    plugin.getConfig().set("record-pings", tasks.recordPings);
-                    plugin.getConfig().set("record-payments", tasks.recordPayments);
-                    plugin.getConfig().set("execute-experiments", tasks.executeExperiments);
-                    plugin.saveConfig();
+                    plugin.getDataConfig().set("record-sessions", tasks.recordSessions);
+                    plugin.getDataConfig().set("record-pings", tasks.recordPings);
+                    plugin.getDataConfig().set("record-payments", tasks.recordPayments);
+                    plugin.getDataConfig().set("execute-experiments", tasks.executeExperiments);
                 } catch (JsonProcessingException exception) {
                     exception.printStackTrace();
                 }

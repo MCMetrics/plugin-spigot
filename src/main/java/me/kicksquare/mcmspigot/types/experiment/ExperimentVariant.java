@@ -6,15 +6,18 @@ import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentAction;
 
 public class ExperimentVariant {
 
-    @JsonProperty("variant") public int variant; // variant id as int
+    @JsonProperty("variant")
+    public int variant; // variant id as int
     @JsonProperty("name")
     public String name;
     @JsonProperty("delay")
     public int delay; // delay in seconds
     @JsonProperty("action")
     public ExperimentAction actionType;
-    @JsonProperty("probability") public double probability;
-    @JsonProperty("actionValue") public String actionValue;
+    @JsonProperty("probability")
+    public double probability;
+    @JsonProperty("actionValue")
+    public String actionValue;
 
     @JsonCreator
     public ExperimentVariant(

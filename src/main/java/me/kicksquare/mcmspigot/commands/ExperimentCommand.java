@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class ExperimentCommand implements CommandExecutor {
 
-    private MCMSpigot plugin;
+    private final MCMSpigot plugin;
 
     public ExperimentCommand(MCMSpigot plugin) {
         this.plugin = plugin;

@@ -9,16 +9,16 @@ import java.util.concurrent.CompletableFuture;
 public class HttpUtil {
 
     private static final OkHttpClient client = new OkHttpClient();
-    private static MCMSpigot plugin = MCMSpigot.getPlugin();
+    private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 
     /**
-     * @param url  The URL to send the request to
+     * @param url        The URL to send the request to
      * @param bodyString The body of the request
-     * @param headers 2D array of Strings for the header names and values
+     * @param headers    2D array of Strings for the header names and values
      * @return The response body as a CompletableFuture
      */
     public static CompletableFuture<String> makeAsyncPostRequest(String url, String bodyString, String[][] headers) {
-        if(bodyString == null) {
+        if (bodyString == null) {
             bodyString = "";
         }
         CompletableFuture<String> postRequestFuture = new CompletableFuture<>();
@@ -46,7 +46,7 @@ public class HttpUtil {
     }
 
     /**
-     * @param url  The URL to send the request to
+     * @param url     The URL to send the request to
      * @param headers 2D array of Strings for the header names and values
      * @return The response body as a CompletableFuture
      */
@@ -98,6 +98,6 @@ public class HttpUtil {
     }
 
     public static String[][] getAuthHeadersFromConfig() {
-        return new String[][]{{"user_id", plugin.getConfig().getString("uid")},{"server_id", plugin.getConfig().getString("server_id")}};
+        return new String[][]{{"user_id", plugin.getMainConfig().getString("uid")}, {"server_id", plugin.getMainConfig().getString("server_id")}};
     }
 }

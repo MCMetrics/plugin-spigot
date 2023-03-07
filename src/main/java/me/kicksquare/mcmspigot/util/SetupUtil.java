@@ -1,37 +1,33 @@
 package me.kicksquare.mcmspigot.util;
 
+import de.leonhard.storage.Config;
 import me.kicksquare.mcmspigot.MCMSpigot;
-import org.bukkit.configuration.file.FileConfiguration;
 
 public class SetupUtil {
 
-    private static MCMSpigot plugin = MCMSpigot.getPlugin();
+    private static final MCMSpigot plugin = MCMSpigot.getPlugin();
+    static Config mainConfig = plugin.getMainConfig();
+    static Config dataConfig = plugin.getDataConfig();
 
     public static boolean isSetup() {
-        FileConfiguration config = plugin.getConfig();
-
-        return config.getBoolean("setup-complete") &&
-                !(config.getString("server_id").equals("") || config.getString("uid") == "");
+        return dataConfig.getBoolean("setup-complete") &&
+                !(mainConfig.getString("server_id").equals("") || mainConfig.getString("uid") == "");
     }
 
     public static boolean shouldRecordSessions() {
-        FileConfiguration config = plugin.getConfig();
-        return isSetup() && config.getBoolean("record-sessions");
+        return isSetup() && dataConfig.getBoolean("record-sessions");
     }
 
     public static boolean shouldRecordPings() {
-        FileConfiguration config = plugin.getConfig();
-        return isSetup() && config.getBoolean("record-pings");
+        return isSetup() && dataConfig.getBoolean("record-pings");
     }
 
     public static boolean shouldRecordPayments() {
-        FileConfiguration config = plugin.getConfig();
-        return isSetup() && config.getBoolean("record-payments");
+        return isSetup() && dataConfig.getBoolean("record-payments");
     }
 
     public static boolean shouldExecuteExperiments() {
-        FileConfiguration config = plugin.getConfig();
-        return isSetup() && config.getBoolean("execute-experiments");
+        return isSetup() && dataConfig.getBoolean("execute-experiments");
     }
 
 }

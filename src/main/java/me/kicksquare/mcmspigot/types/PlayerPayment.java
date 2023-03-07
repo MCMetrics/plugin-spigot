@@ -30,8 +30,8 @@ public class PlayerPayment {
         this.package_id = package_id;
         this.dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         System.out.println("dateTime: " + this.dateTime);
-        this.uid = plugin.getConfig().getString("uid");
-        this.server_id = plugin.getConfig().getString("server_id");
+        this.uid = plugin.getMainConfig().getString("uid");
+        this.server_id = plugin.getMainConfig().getString("server_id");
 
         System.out.println("Server Id: " + server_id + " UID: " + uid);
     }

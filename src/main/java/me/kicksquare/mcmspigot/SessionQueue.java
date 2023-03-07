@@ -5,6 +5,9 @@ import me.kicksquare.mcmspigot.types.Session;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+import static me.kicksquare.mcmspigot.listeners.PlayerSessionListener.uploadSession;
 
 public class SessionQueue {
 
@@ -27,5 +30,16 @@ public class SessionQueue {
         Session session = sessionMap.get(uuid);
         removeSession(uuid);
         return session;
+    }
+
+    public void endAndUploadAllSessions() {
+        for (Map.Entry<UUID, Session> entry : sessionMap.entrySet()) {
+            Session session = entry.getValue();
+            session.endSessionNow();
+
+            CompletableFuture.runAsync(() -> {
+                uploadSession(session);
+            });
+        }
     }
 }

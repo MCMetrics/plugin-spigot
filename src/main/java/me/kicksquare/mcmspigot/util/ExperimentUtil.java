@@ -24,13 +24,13 @@ import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
 
 public class ExperimentUtil {
 
-    private static MCMSpigot plugin = MCMSpigot.getPlugin();
+    private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 
     public static ExperimentVariant executeActions(Player p, Experiment experiment) {
-        if (!plugin.getConfig().getBoolean("setup-complete")) return null;
+        if (!plugin.getDataConfig().getBoolean("setup-complete")) return null;
 
         // loop through conditions; if any condition is not met, return
-        String bedrockPrefix = plugin.getConfig().getString("bedrock-prefix");
+        String bedrockPrefix = plugin.getMainConfig().getString("bedrock-prefix");
         String playerName = p.getName();
         for (ExperimentCondition condition : experiment.conditions) {
             switch (condition.type) {

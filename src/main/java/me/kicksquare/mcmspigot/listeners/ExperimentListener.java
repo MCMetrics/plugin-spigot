@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class ExperimentListener implements Listener {
 
-    private MCMSpigot plugin;
+    private final MCMSpigot plugin;
 
     public ExperimentListener(MCMSpigot plugin) {
         this.plugin = plugin;

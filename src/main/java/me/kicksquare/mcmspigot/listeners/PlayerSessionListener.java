@@ -15,9 +15,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.concurrent.CompletableFuture;
+
 public class PlayerSessionListener implements Listener {
 
-    private MCMSpigot plugin;
+    private final MCMSpigot plugin;
 
     public PlayerSessionListener(MCMSpigot plugin) {
         this.plugin = plugin;
@@ -62,7 +64,6 @@ public class PlayerSessionListener implements Listener {
         if (!SetupUtil.shouldRecordSessions()) return;
 
         final SessionQueue sessionQueue = plugin.getSessionQueue();
-
         Player p = e.getPlayer();
 
         Session playerSession = sessionQueue.getAndRemoveSession(p.getUniqueId());
@@ -72,10 +73,16 @@ public class PlayerSessionListener implements Listener {
         }
         playerSession.endSessionNow();
 
+        CompletableFuture.runAsync(() -> {
+            uploadSession(playerSession);
+        });
+    }
+
+    public static void uploadSession(Session session) {
         // get the session as a json string
         String jsonString;
         try {
-            jsonString = mapper.writeValueAsString(playerSession);
+            jsonString = mapper.writeValueAsString(session);
         } catch (JsonProcessingException ex) {
             Logger.warning("Could not convert session to json string!");
             throw new RuntimeException(ex);

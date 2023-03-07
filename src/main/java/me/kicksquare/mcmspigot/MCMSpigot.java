@@ -1,5 +1,9 @@
 package me.kicksquare.mcmspigot;
 
+import de.leonhard.storage.Config;
+import de.leonhard.storage.SimplixBuilder;
+import de.leonhard.storage.internal.settings.DataType;
+import de.leonhard.storage.internal.settings.ReloadSettings;
 import io.sentry.Sentry;
 import me.kicksquare.mcmspigot.commands.ExperimentCommand;
 import me.kicksquare.mcmspigot.commands.MCMCommand;
@@ -15,14 +19,17 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 
 @SuppressWarnings("DataFlowIssue")
 public final class MCMSpigot extends JavaPlugin {
 
     private static MCMSpigot plugin; // used in ExperimentUtil
-    private SessionQueue sessionQueue = new SessionQueue();
-    private ArrayList<Experiment> experiments = new ArrayList<>();
+    private Config mainConfig;
+    private Config dataConfig;
+    private final SessionQueue sessionQueue = new SessionQueue();
+    private final ArrayList<Experiment> experiments = new ArrayList<>();
 
     public static MCMSpigot getPlugin() {
         return plugin;
@@ -32,8 +39,20 @@ public final class MCMSpigot extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
+        mainConfig = SimplixBuilder
+                .fromFile(new File(getDataFolder(), "config.yml"))
+                .addInputStreamFromResource("config.yml")
+                .setDataType(DataType.SORTED)
+                .setReloadSettings(ReloadSettings.MANUALLY)
+                .createConfig();
+
+        dataConfig = SimplixBuilder
+                .fromFile(new File(getDataFolder(), "data/data.yml"))
+                .addInputStreamFromResource("data.yml")
+                .setDataType(DataType.SORTED)
+                .setReloadSettings(ReloadSettings.MANUALLY)
+                .createConfig();
+
 
         // standard command (reload, setup, etc)
         getCommand("mcmetrics").setExecutor(new MCMCommand(this));
@@ -62,7 +81,7 @@ public final class MCMSpigot extends JavaPlugin {
         }, 0, 20 * 60 * 5);
 
         // enable bstats
-        if (getConfig().getBoolean("enable-bstats")) {
+        if (mainConfig.getBoolean("enable-bstats")) {
             new Metrics(this, 17450);
         }
 
@@ -72,7 +91,7 @@ public final class MCMSpigot extends JavaPlugin {
         }
 
         // enable sentry error reporting
-        if (getConfig().getBoolean("enable-sentry")) {
+        if (mainConfig.getBoolean("enable-sentry")) {
             Sentry.init(options -> {
                 options.setDsn("https://b157b0cab7ba42cd92c83a583e57af66@o4504532201046017.ingest.sentry.io/4504540638347264");
                 options.setTracesSampleRate(0.1);
@@ -92,5 +111,19 @@ public final class MCMSpigot extends JavaPlugin {
         return experiments;
     }
 
-    //todo upload all sessions in queue on disable
+    public Config getMainConfig() {
+        return mainConfig;
+    }
+
+    public Config getDataConfig() {
+        return dataConfig;
+    }
+
+    @Override
+    public void onDisable() {
+        // upload all sessions in queue on server shutdown
+        System.out.println("Disabling, uploading all sessions remaining in queue...");
+
+        sessionQueue.endAndUploadAllSessions();
+    }
 }

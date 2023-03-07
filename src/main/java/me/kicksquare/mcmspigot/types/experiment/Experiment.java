@@ -42,9 +42,11 @@ public class Experiment {
     public ExperimentVariant[] getVariants() {
         return variants;
     }
+
     public boolean isConsistentVariantForUuid() {
         return consistentVariantForUuid;
     }
+
     public int getVariantsRandomlyOrdered() {
         return variantsRandomlyOrdered;
     }

@@ -4,7 +4,7 @@ main: me.kicksquare.mcmspigot.MCMSpigot
 api-version: 1.17
 commands:
   mcmetrics:
-    aliases: [mcm, metrics]
+    aliases: [ mcm, metrics ]
     description: MCMetrics main command
   /mcmetrics:
     description: MCMetrics main command
@@ -14,4 +14,4 @@ commands:
     description: Internal command used to trigger an ab test [MCMetrics]
 
 
-softdepend: [PlaceholderAPI, BuyCraftX, CraftingStore]
+softdepend: [ PlaceholderAPI, BuyCraftX, CraftingStore ]

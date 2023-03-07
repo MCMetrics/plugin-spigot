@@ -14,7 +14,7 @@ public class SentryExceptionHandler implements Thread.UncaughtExceptionHandler {
                 break;
             }
         }
-        if(isFromThisPlugin) {
+        if (isFromThisPlugin) {
             System.out.println("Detected an MCMetrics exception. Uploading to sentry.");
             Sentry.captureException(e);
         }
