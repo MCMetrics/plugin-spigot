@@ -29,5 +29,4 @@ public class SetupUtil {
     public static boolean shouldExecuteExperiments() {
         return isSetup() && dataConfig.getBoolean("execute-experiments");
     }
-
 }

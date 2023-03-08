@@ -64,7 +64,7 @@ public class MCMCommand implements CommandExecutor {
         } else if (args.length == 1 && args[0].equalsIgnoreCase("enablesentry")) {
             sender.sendMessage("Enabling Sentry...");
             plugin.getMainConfig().set("enable-sentry", true);
-            plugin.reloadConfig();
+            plugin.getMainConfig().forceReload();
             sender.sendMessage(colorize("&a&lSentry Enabled! &r&7Thank you for helping us improve the plugin!"));
             return true;
         }
@@ -80,7 +80,8 @@ public class MCMCommand implements CommandExecutor {
 
     public static CompletableFuture<Boolean> reloadConfigAndFetchData() {
         return CompletableFuture.supplyAsync(() -> {
-            staticPlugin.reloadConfig();
+            staticPlugin.getMainConfig().forceReload();
+            staticPlugin.getDataConfig().forceReload();
 
             if (SetupUtil.isSetup()) {
                 staticPlugin.getExperiments().clear();
@@ -115,7 +116,8 @@ public class MCMCommand implements CommandExecutor {
             plugin.getMainConfig().set("uid", uid);
             plugin.getMainConfig().set("server_id", server_id);
             plugin.getDataConfig().set("setup-complete", true);
-            plugin.reloadConfig();
+            plugin.getMainConfig().forceReload();
+            plugin.getDataConfig().forceReload();
 
             CompletableFuture.supplyAsync(() -> {
                 System.out.println("Setting server as setup...");
