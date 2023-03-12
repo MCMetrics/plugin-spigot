@@ -1,13 +1,11 @@
 package me.kicksquare.mcmspigot.listeners;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.SessionQueue;
 import me.kicksquare.mcmspigot.logging.Logger;
 import me.kicksquare.mcmspigot.types.Session;
 import me.kicksquare.mcmspigot.util.SetupUtil;
-import me.kicksquare.mcmspigot.util.http.HttpUtil;
+import me.kicksquare.mcmspigot.util.UploadQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,8 +22,6 @@ public class PlayerSessionListener implements Listener {
     public PlayerSessionListener(MCMSpigot plugin) {
         this.plugin = plugin;
     }
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     // can only get the address from PlayerLoginEvent
     @EventHandler
@@ -74,22 +70,9 @@ public class PlayerSessionListener implements Listener {
         playerSession.endSessionNow();
 
         CompletableFuture.runAsync(() -> {
-            uploadSession(playerSession);
+            UploadQueue uploadQueue = plugin.getUploadQueue();
+
+            uploadQueue.addSession(playerSession);
         });
-    }
-
-    public static void uploadSession(Session session) {
-        // get the session as a json string
-        String jsonString;
-        try {
-            jsonString = mapper.writeValueAsString(session);
-        } catch (JsonProcessingException ex) {
-            Logger.warning("Could not convert session to json string!");
-            throw new RuntimeException(ex);
-        }
-
-        System.out.println("Uploading session now... " + jsonString);
-
-        HttpUtil.makeAsyncPostRequest("https://dashboard.mcmetrics.net/api/sessions/insertSession", jsonString, HttpUtil.getAuthHeadersFromConfig());
     }
 }

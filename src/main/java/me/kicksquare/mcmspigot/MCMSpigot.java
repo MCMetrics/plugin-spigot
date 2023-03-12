@@ -14,6 +14,7 @@ import me.kicksquare.mcmspigot.listeners.PlayerSessionListener;
 import me.kicksquare.mcmspigot.papi.PapiExtension;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.util.SetupUtil;
+import me.kicksquare.mcmspigot.util.UploadQueue;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -28,7 +29,10 @@ public final class MCMSpigot extends JavaPlugin {
     private static MCMSpigot plugin; // used in ExperimentUtil
     private Config mainConfig;
     private Config dataConfig;
+
     private final SessionQueue sessionQueue = new SessionQueue();
+    private final UploadQueue uploadQueue = new UploadQueue();
+
     private final ArrayList<Experiment> experiments = new ArrayList<>();
 
     public static MCMSpigot getPlugin() {
@@ -70,6 +74,7 @@ public final class MCMSpigot extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             // need to do this check in case of a config reload without reload
             if (!SetupUtil.shouldRecordPings()) return;
+            if (dataConfig.getInt("ping-interval") == 0) return;
 
             try {
                 System.out.println("uploading player count");
@@ -78,7 +83,7 @@ public final class MCMSpigot extends JavaPlugin {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, 0, 20 * 60 * 5);
+        }, 0, 20L * 60 * dataConfig.getInt("ping-interval"));
 
         // enable bstats
         if (mainConfig.getBoolean("enable-bstats")) {
@@ -105,6 +110,10 @@ public final class MCMSpigot extends JavaPlugin {
 
     public SessionQueue getSessionQueue() {
         return sessionQueue;
+    }
+
+    public UploadQueue getUploadQueue() {
+        return uploadQueue;
     }
 
     public ArrayList<Experiment> getExperiments() {

@@ -5,13 +5,14 @@ import me.kicksquare.mcmspigot.types.Session;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
-import static me.kicksquare.mcmspigot.listeners.PlayerSessionListener.uploadSession;
 
+// this tracks sessions of users who are currently online
 public class SessionQueue {
 
     public Map<UUID, Session> sessionMap;
+
+    private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 
     public SessionQueue() {
         sessionMap = new HashMap<>();
@@ -37,9 +38,7 @@ public class SessionQueue {
             Session session = entry.getValue();
             session.endSessionNow();
 
-            CompletableFuture.runAsync(() -> {
-                uploadSession(session);
-            });
+            plugin.getUploadQueue().addSession(session);
         }
     }
 }
