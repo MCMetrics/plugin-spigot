@@ -12,11 +12,12 @@ import java.util.ArrayList;
 // this tracks sessions that are already finished (user logged off) to be uploaded in bulk later on
 public class UploadQueue {
     private static final ObjectMapper mapper = new ObjectMapper();
-    private MCMSpigot plugin = MCMSpigot.getPlugin();
+    private MCMSpigot plugin;
 
     public ArrayList<Session> sessions;
 
-    public UploadQueue() {
+    public UploadQueue(MCMSpigot plugin) {
+        this.plugin = plugin;
         sessions = new ArrayList<>();
     }
 
@@ -40,6 +41,7 @@ public class UploadQueue {
         sessions.add(session);
 
         if (sessions.size() >= plugin.getDataConfig().getInt("bulk-session-threshold")) {
+            System.out.println("2");
             uploadAll();
         }
     }

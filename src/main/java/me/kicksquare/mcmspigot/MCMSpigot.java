@@ -31,7 +31,7 @@ public final class MCMSpigot extends JavaPlugin {
     private Config dataConfig;
 
     private final SessionQueue sessionQueue = new SessionQueue();
-    private final UploadQueue uploadQueue = new UploadQueue();
+    private final UploadQueue uploadQueue = new UploadQueue(this);
 
     private final ArrayList<Experiment> experiments = new ArrayList<>();
 
