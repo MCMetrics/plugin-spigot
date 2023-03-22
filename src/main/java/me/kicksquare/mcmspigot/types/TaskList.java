@@ -51,6 +51,11 @@ public class TaskList {
                     plugin.getDataConfig().set("execute-experiments", tasks.executeExperiments);
                     plugin.getDataConfig().set("bulk-session-threshold", tasks.bulkSessionThreshold);
                 } catch (JsonProcessingException exception) {
+                    // if the message contains "Invalid user or server id", don't spam the console and just send one custom error
+                    if (response.contains("Invalid user or server id")) {
+                        System.out.println("MCMetrics: Error occurred while fetching experiments: Invalid user or server id");
+                        return;
+                    }
                     exception.printStackTrace();
                 }
             }

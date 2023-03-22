@@ -141,12 +141,12 @@ public class ExperimentUtil {
 
     public static void fetchExperiments() {
         HttpUtil.makeAsyncGetRequest("api/experiments/getServerExperiments", HttpUtil.getAuthHeadersFromConfig())
-                .thenAccept(result -> {
-                    System.out.println("----- Fetched Ab tests! Result: " + result);
+                .thenAccept(response -> {
+                    System.out.println("----- Fetched Ab tests! Result: " + response);
 
                     ObjectMapper mapper = new ObjectMapper();
                     try {
-                        Experiment[] experiments = mapper.readValue(result, Experiment[].class);
+                        Experiment[] experiments = mapper.readValue(response, Experiment[].class);
                         for (Experiment experiment : experiments) {
                             // only add active experiments
                             if (experiment.active) {
@@ -155,6 +155,11 @@ public class ExperimentUtil {
                         }
                         System.out.println("Success! Number of experiments: " + plugin.getExperiments().size());
                     } catch (JsonProcessingException ex) {
+                        if (response.contains("Invalid user or server id")) {
+                            System.out.println("MCMetrics: Error occurred while fetching experiments: Invalid user or server id");
+                            return;
+                        }
+
                         System.out.println("Error occurred while fetching experiments:");
                         ex.printStackTrace();
                         throw new RuntimeException(ex);
