@@ -27,8 +27,8 @@ public class ExperimentCommand implements CommandExecutor {
             return true;
         }
 
-        if (args.length != 2) {
-            sender.sendMessage("Usage: /mcmexperiment <experiment name> <player name>");
+        if (args.length < 2) {
+            sender.sendMessage("Usage: /mcmexperiment <player name> <experiment name>");
             return true;
         }
 
@@ -37,9 +37,11 @@ public class ExperimentCommand implements CommandExecutor {
             return true;
         }
 
-        final String experimentName = args[0];
-        final String playerName = args[1];
+        final String playerName = args[0];
         final Player player = plugin.getServer().getPlayer(playerName);
+
+        // args 2 and later are the experiment name
+        final String experimentName = String.join(" ", args).substring(args[0].length() + 1);
 
         if (player == null) {
             sender.sendMessage("Player not found.");

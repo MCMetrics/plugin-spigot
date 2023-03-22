@@ -98,13 +98,13 @@ public class ExperimentUtil {
             }
         }
 
+        // convert delay in seconds to ticks
+        int delay = selectedVariant.delay * 20;
+
+
         ExperimentAction actionType = selectedVariant.actionType;
         String actionValue = selectedVariant.actionValue;
         // replace placeholders:
-        // ${player} -> player name
-        // ${uuid} -> player uuid
-        // ${variant} -> variant id
-        // ${experimentName} -> experiment name
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("player", p.getName());
         placeholders.put("uuid", p.getUniqueId().toString());
@@ -118,15 +118,30 @@ public class ExperimentUtil {
                 System.out.println("Experiment: Skipping control variant!");
                 break;
             case PLAYER_COMMAND:
-                p.performCommand(replacedPlaceholders);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    // make sure player is still online
+                    if (!p.isOnline()) return;
+
+                    p.performCommand(replacedPlaceholders);
+                }, delay);
+
             case CHAT_MESSAGE:
-                p.sendMessage(colorize(replacedPlaceholders));
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    // make sure player is still online
+                    if (!p.isOnline()) return;
+
+                    p.sendMessage(colorize(replacedPlaceholders));
+                }, delay);
+                break;
             case CONSOLE_COMMAND:
                 // dont execute empty commands
                 if (Objects.equals(replacedPlaceholders, "") || replacedPlaceholders == null) {
                     break;
                 }
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacedPlaceholders);
+
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacedPlaceholders);
+                }, delay);
         }
 
         // save data to the player's session so that it is uploaded later
