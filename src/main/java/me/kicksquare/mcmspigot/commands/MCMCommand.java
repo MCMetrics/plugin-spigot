@@ -80,10 +80,7 @@ public class MCMCommand implements CommandExecutor {
 
     public static CompletableFuture<Boolean> reloadConfigAndFetchData() {
         return CompletableFuture.supplyAsync(() -> {
-            staticPlugin.getMainConfig().addDefaultsFromInputStream();
             staticPlugin.getMainConfig().forceReload();
-            staticPlugin.getDataConfig().addDefaultsFromInputStream();
-            staticPlugin.getDataConfig().forceReload();
 
             if (SetupUtil.isSetup()) {
                 staticPlugin.getExperiments().clear();
