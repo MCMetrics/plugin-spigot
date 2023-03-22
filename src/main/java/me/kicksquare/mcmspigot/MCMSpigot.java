@@ -79,7 +79,7 @@ public final class MCMSpigot extends JavaPlugin {
             try {
                 System.out.println("uploading player count");
                 final String bodyString = "{\"playercount\": \"" + Bukkit.getOnlinePlayers().size() + "\"}";
-                HttpUtil.makeAsyncPostRequest("https://dashboard.mcmetrics.net/api/pings/insertPing", bodyString, HttpUtil.getAuthHeadersFromConfig());
+                HttpUtil.makeAsyncPostRequest("api/pings/insertPing", bodyString, HttpUtil.getAuthHeadersFromConfig());
             } catch (Exception e) {
                 e.printStackTrace();
             }

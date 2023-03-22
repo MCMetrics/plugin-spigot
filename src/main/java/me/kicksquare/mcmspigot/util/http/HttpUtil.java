@@ -11,6 +11,15 @@ public class HttpUtil {
     private static final OkHttpClient client = new OkHttpClient();
     private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 
+    // adds either the localhost url or the prod url to the request based on the config
+    public static String formatUrl(String url) {
+        if (plugin.getDataConfig().getBoolean("dev-mode")) {
+            return "http://localhost:3000/" + url;
+        } else {
+            return "https://dashboard.mcmetrics.net/" + url;
+        }
+    }
+
     /**
      * @param url        The URL to send the request to
      * @param bodyString The body of the request
@@ -26,7 +35,7 @@ public class HttpUtil {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, bodyString);
         Request request = new Request.Builder()
-                .url(url)
+                .url(formatUrl(url))
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -55,7 +64,7 @@ public class HttpUtil {
 
         CompletableFuture<String> getRequestFuture = new CompletableFuture<>();
         Request request = new Request.Builder()
-                .url(url)
+                .url(formatUrl(url))
                 .get()
                 .addHeader("Content-Type", "application/json")
                 .build();

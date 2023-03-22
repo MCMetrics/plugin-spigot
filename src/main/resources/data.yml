@@ -8,3 +8,5 @@ ping-interval: 60
 record-payments: true
 execute-experiments: true
 bulk-session-threshold: 1
+
+dev-mode: false

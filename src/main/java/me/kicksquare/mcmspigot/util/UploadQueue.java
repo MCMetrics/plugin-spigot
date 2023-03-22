@@ -33,7 +33,7 @@ public class UploadQueue {
 
         System.out.println("Uploading session now... " + jsonString);
 
-        HttpUtil.makeAsyncPostRequest("https://dashboard.mcmetrics.net/api/sessions/insertBulkSessions", jsonString, HttpUtil.getAuthHeadersFromConfig());
+        HttpUtil.makeAsyncPostRequest("api/sessions/insertBulkSessions", jsonString, HttpUtil.getAuthHeadersFromConfig());
         clear();
     }
 

@@ -140,7 +140,7 @@ public class ExperimentUtil {
     }
 
     public static void fetchExperiments() {
-        HttpUtil.makeAsyncGetRequest("https://dashboard.mcmetrics.net/api/experiments/getServerExperiments", HttpUtil.getAuthHeadersFromConfig())
+        HttpUtil.makeAsyncGetRequest("api/experiments/getServerExperiments", HttpUtil.getAuthHeadersFromConfig())
                 .thenAccept(result -> {
                     System.out.println("----- Fetched Ab tests! Result: " + result);
 

@@ -121,7 +121,7 @@ public class MCMCommand implements CommandExecutor {
 
             CompletableFuture.supplyAsync(() -> {
                 System.out.println("Setting server as setup...");
-                HttpUtil.makeAsyncGetRequest("https://dashboard.mcmetrics.net/api/server/setServerIsSetup", HttpUtil.getAuthHeadersFromConfig());
+                HttpUtil.makeAsyncGetRequest("api/server/setServerIsSetup", HttpUtil.getAuthHeadersFromConfig());
                 System.out.println("Fetching experiments...");
                 reloadConfigAndFetchData();
                 return true;

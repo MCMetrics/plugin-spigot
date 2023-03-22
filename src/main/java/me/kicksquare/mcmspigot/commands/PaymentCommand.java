@@ -71,7 +71,7 @@ public class PaymentCommand implements CommandExecutor {
 
         System.out.println("Uploading payment session now... " + jsonString);
 
-        HttpUtil.makeAsyncPostRequest("https://dashboard.mcmetrics.net/api/payments/insertPayment", jsonString, HttpUtil.getAuthHeadersFromConfig());
+        HttpUtil.makeAsyncPostRequest("api/payments/insertPayment", jsonString, HttpUtil.getAuthHeadersFromConfig());
 
         // payments trigger for ab tests
         Player p = Bukkit.getPlayer(player_uuid);
