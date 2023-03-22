@@ -74,6 +74,8 @@ public class MCMCommand implements CommandExecutor {
         sender.sendMessage(colorize("&7 • &b/mcmetrics reload &7- Reloads the config"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics experiments &7- Lists all active experiments"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics setup <user id> <server id> &7- Automatically configures the plugin"));
+        sender.sendMessage(colorize("&7 • &b/mcmexperiment <player name> <experiment name> &7- Manually triggers an experiment. Console only."));
+        sender.sendMessage(colorize("&7 • &b/mcmpayment <tebex|craftingstore> <player_uuid> <transaction_id> <amount> <currency> <package_id> &7- Manually triggers a payment. Console only."));
 
         return true;
     }
@@ -81,6 +83,7 @@ public class MCMCommand implements CommandExecutor {
     public static CompletableFuture<Boolean> reloadConfigAndFetchData() {
         return CompletableFuture.supplyAsync(() -> {
             staticPlugin.getMainConfig().forceReload();
+            staticPlugin.getDataConfig().forceReload();
 
             if (SetupUtil.isSetup()) {
                 staticPlugin.getExperiments().clear();
