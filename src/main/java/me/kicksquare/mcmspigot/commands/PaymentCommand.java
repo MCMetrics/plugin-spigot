@@ -3,11 +3,11 @@ package me.kicksquare.mcmspigot.commands;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kicksquare.mcmspigot.MCMSpigot;
-import me.kicksquare.mcmspigot.logging.Logger;
 import me.kicksquare.mcmspigot.types.PlayerPayment;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentTrigger;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 import org.bukkit.Bukkit;
@@ -65,11 +65,11 @@ public class PaymentCommand implements CommandExecutor {
         try {
             jsonString = mapper.writeValueAsString(playerPayment);
         } catch (JsonProcessingException ex) {
-            Logger.warning("Error converting incoming payment to json string.");
+            LoggerUtil.severe("Error converting incoming payment to json string.");
             throw new RuntimeException(ex);
         }
 
-        System.out.println("Uploading payment session now... " + jsonString);
+        LoggerUtil.debug("Uploading payment session now... " + jsonString);
 
         HttpUtil.makeAsyncPostRequest("api/payments/insertPayment", jsonString, HttpUtil.getAuthHeadersFromConfig());
 

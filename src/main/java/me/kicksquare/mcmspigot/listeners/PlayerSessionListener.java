@@ -2,8 +2,8 @@ package me.kicksquare.mcmspigot.listeners;
 
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.SessionQueue;
-import me.kicksquare.mcmspigot.logging.Logger;
 import me.kicksquare.mcmspigot.types.Session;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import me.kicksquare.mcmspigot.util.UploadQueue;
 import org.bukkit.entity.Player;
@@ -48,7 +48,7 @@ public class PlayerSessionListener implements Listener {
 
         Session playerSession = sessionQueue.getAndRemoveSession(e.getPlayer().getUniqueId());
         if (playerSession == null) {
-            Logger.warning("Player joined, but could not find session in queue from PlayerLoginEvent!");
+            LoggerUtil.warning("Player joined, but could not find session in queue from PlayerLoginEvent!");
             return;
         }
         playerSession.firstSession = !e.getPlayer().hasPlayedBefore();
@@ -64,7 +64,7 @@ public class PlayerSessionListener implements Listener {
 
         Session playerSession = sessionQueue.getAndRemoveSession(p.getUniqueId());
         if (playerSession == null) {
-            Logger.warning("Player left, but could not find session in queue from PlayerJoinEvent! This is normal after hot-reloading the plugin.");
+            LoggerUtil.warning("Player left, but could not find session in queue from PlayerJoinEvent! This is normal after hot-reloading the plugin.");
             return;
         }
         playerSession.endSessionNow();

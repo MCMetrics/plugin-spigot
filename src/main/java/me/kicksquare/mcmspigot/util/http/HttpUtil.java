@@ -2,6 +2,7 @@ package me.kicksquare.mcmspigot.util.http;
 
 import com.squareup.okhttp.*;
 import me.kicksquare.mcmspigot.MCMSpigot;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -60,7 +61,6 @@ public class HttpUtil {
      * @return The response body as a CompletableFuture
      */
     public static CompletableFuture<String> makeAsyncGetRequest(String url, String[][] headers) {
-        System.out.println("Making async get request to " + url);
 
         CompletableFuture<String> getRequestFuture = new CompletableFuture<>();
         Request request = new Request.Builder()
@@ -90,7 +90,7 @@ public class HttpUtil {
 
             @Override
             public void onFailure(Request request, IOException e) {
-                System.out.println("Request failed while making async request with request body " + request.body());
+                LoggerUtil.severe("Request failed while making async request with request body " + request.body());
                 callRequestFuture.completeExceptionally(e);
                 throw new RuntimeException(e);
             }
@@ -98,7 +98,7 @@ public class HttpUtil {
             @Override
             public void onResponse(Response response) throws IOException {
                 String responseBody = response.body().string();
-                System.out.println("Async request successful! Response body: " + responseBody);
+                LoggerUtil.debug("Async HTTP request successful! Response body: " + responseBody);
                 callRequestFuture.complete(responseBody);
             }
         });

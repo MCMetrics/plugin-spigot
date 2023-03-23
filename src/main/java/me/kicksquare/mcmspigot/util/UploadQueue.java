@@ -3,7 +3,6 @@ package me.kicksquare.mcmspigot.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kicksquare.mcmspigot.MCMSpigot;
-import me.kicksquare.mcmspigot.logging.Logger;
 import me.kicksquare.mcmspigot.types.Session;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 
@@ -27,11 +26,11 @@ public class UploadQueue {
         try {
             jsonString = mapper.writeValueAsString(sessions);
         } catch (JsonProcessingException ex) {
-            Logger.warning("Could not convert sessions to json string!");
+            LoggerUtil.severe("Could not convert sessions to json string!");
             throw new RuntimeException(ex);
         }
 
-        System.out.println("Uploading session now... " + jsonString);
+        LoggerUtil.debug("Uploading session now... " + jsonString);
 
         HttpUtil.makeAsyncPostRequest("api/sessions/insertBulkSessions", jsonString, HttpUtil.getAuthHeadersFromConfig());
         clear();
@@ -41,7 +40,6 @@ public class UploadQueue {
         sessions.add(session);
 
         if (sessions.size() >= plugin.getDataConfig().getInt("bulk-session-threshold")) {
-            System.out.println("2");
             uploadAll();
         }
     }

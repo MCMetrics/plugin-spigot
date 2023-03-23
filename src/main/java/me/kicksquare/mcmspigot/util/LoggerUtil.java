@@ -1,8 +1,8 @@
-package me.kicksquare.mcmspigot.logging;
+package me.kicksquare.mcmspigot.util;
 
 import me.kicksquare.mcmspigot.MCMSpigot;
 
-public class Logger {
+public class LoggerUtil {
 
     private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 
@@ -12,6 +12,12 @@ public class Logger {
 
     public static void info(String message) {
         plugin.getLogger().info(message);
+    }
+
+    public static void debug(String message) {
+        if (plugin.getMainConfig().getBoolean("debug")) {
+            plugin.getLogger().info("[DEBUG] " + message);
+        }
     }
 
     public static void severe(String message) {

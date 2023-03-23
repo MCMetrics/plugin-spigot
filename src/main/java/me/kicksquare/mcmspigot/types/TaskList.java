@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kicksquare.mcmspigot.MCMSpigot;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 
 public class TaskList {
@@ -53,7 +54,8 @@ public class TaskList {
                 } catch (JsonProcessingException exception) {
                     // if the message contains "Invalid user or server id", don't spam the console and just send one custom error
                     if (response.contains("Invalid user or server id")) {
-                        System.out.println("MCMetrics: Error occurred while fetching task list: Invalid user or server id");
+                        LoggerUtil.warning("Error occurred while fetching task list: Invalid user or server id");
+                        LoggerUtil.warning("Make sure your server is properly set up by running /mcmetrics setup");
                         return;
                     }
                     exception.printStackTrace();

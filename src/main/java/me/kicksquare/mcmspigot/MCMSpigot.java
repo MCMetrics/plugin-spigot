@@ -13,6 +13,7 @@ import me.kicksquare.mcmspigot.listeners.ExperimentListener;
 import me.kicksquare.mcmspigot.listeners.PlayerSessionListener;
 import me.kicksquare.mcmspigot.papi.PapiExtension;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import me.kicksquare.mcmspigot.util.UploadQueue;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
@@ -77,7 +78,7 @@ public final class MCMSpigot extends JavaPlugin {
             if (dataConfig.getInt("ping-interval") == 0) return;
 
             try {
-                System.out.println("uploading player count");
+                LoggerUtil.debug("uploading player count");
                 final String bodyString = "{\"playercount\": \"" + Bukkit.getOnlinePlayers().size() + "\"}";
                 HttpUtil.makeAsyncPostRequest("api/pings/insertPing", bodyString, HttpUtil.getAuthHeadersFromConfig());
             } catch (Exception e) {
@@ -131,7 +132,7 @@ public final class MCMSpigot extends JavaPlugin {
     @Override
     public void onDisable() {
         // upload all sessions in queue on server shutdown
-        System.out.println("Disabling, uploading all sessions remaining in queue...");
+        LoggerUtil.debug("Disabling, uploading all sessions remaining in queue...");
 
         sessionQueue.endAndUploadAllSessions();
     }

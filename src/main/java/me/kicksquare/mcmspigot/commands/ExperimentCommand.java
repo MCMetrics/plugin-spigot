@@ -4,6 +4,7 @@ import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentTrigger;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -50,9 +51,9 @@ public class ExperimentCommand implements CommandExecutor {
 
         ArrayList<Experiment> experiments = plugin.getExperiments();
         for (Experiment experiment : experiments) {
-            System.out.println("checking experiment " + experiment.name + " with trigger " + experiment.trigger);
+            LoggerUtil.debug("checking experiment " + experiment.name + " with trigger " + experiment.trigger);
             if (experiment.name.equalsIgnoreCase(experimentName) && experiment.trigger == ExperimentTrigger.COMMAND) {
-                System.out.println("Found experiment!");
+                LoggerUtil.debug("Found experiment!");
                 ExperimentUtil.executeActions(player, experiment);
                 sender.sendMessage("Experiment executed successfully!");
                 return true;

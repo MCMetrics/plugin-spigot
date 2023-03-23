@@ -1,7 +1,7 @@
 package me.kicksquare.mcmspigot.types;
 
-import me.kicksquare.mcmspigot.logging.Logger;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentSession;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class Session {
     public void endSessionNow() {
         // if uuid, join_time, domain, server id, or uid are null, throw an exception
         if (this.player_uuid == null || this.join_time == null || this.domain == null) {
-            Logger.severe("Session is missing required fields!");
+            LoggerUtil.severe("Session is missing required fields!");
         }
 
         // set leave to current time

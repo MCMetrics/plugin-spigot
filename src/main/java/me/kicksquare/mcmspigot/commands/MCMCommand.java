@@ -7,6 +7,7 @@ import me.kicksquare.mcmspigot.types.experiment.ExperimentCondition;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentVariant;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentAction;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 import org.bukkit.command.Command;
@@ -122,9 +123,9 @@ public class MCMCommand implements CommandExecutor {
             plugin.getDataConfig().forceReload();
 
             CompletableFuture.supplyAsync(() -> {
-                System.out.println("Setting server as setup...");
+                LoggerUtil.debug("Setting server as setup...");
                 HttpUtil.makeAsyncGetRequest("api/server/setServerIsSetup", HttpUtil.getAuthHeadersFromConfig());
-                System.out.println("Fetching experiments...");
+                LoggerUtil.debug("Fetching experiments...");
                 reloadConfigAndFetchData();
                 return true;
             }).thenAccept((result) -> {

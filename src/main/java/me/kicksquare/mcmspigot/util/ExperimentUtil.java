@@ -85,11 +85,6 @@ public class ExperimentUtil {
             for (int i = 0; i < variantsRandomlyOrdered.length(); i++) {
                 int variantIndex = Integer.parseInt(String.valueOf(variantsRandomlyOrdered.charAt(i))) - 1;
 
-                System.out.println("variantIndex: " + variantIndex);
-                System.out.println("probability: " + probability);
-                System.out.println("maxProbability: " + maxProbability);
-                System.out.println("variants length: " + variants.length);
-                System.out.println("variants[variantIndex].probability: " + variants[variantIndex].probability);
                 maxProbability += variants[variantIndex].probability;
 
                 if (probability <= maxProbability && probability > maxProbability - variants[variantIndex].probability) {
@@ -115,7 +110,7 @@ public class ExperimentUtil {
 
         switch (actionType) {
             case CONTROL:
-                System.out.println("Experiment: Skipping control variant!");
+                LoggerUtil.debug("Experiment: Skipping control variant!");
                 break;
             case PLAYER_COMMAND:
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -157,7 +152,7 @@ public class ExperimentUtil {
     public static void fetchExperiments() {
         HttpUtil.makeAsyncGetRequest("api/experiments/getServerExperiments", HttpUtil.getAuthHeadersFromConfig())
                 .thenAccept(response -> {
-                    System.out.println("----- Fetched Ab tests! Result: " + response);
+                    LoggerUtil.debug("Fetched Ab tests! Result: " + response);
 
                     ObjectMapper mapper = new ObjectMapper();
                     try {
@@ -168,14 +163,15 @@ public class ExperimentUtil {
                                 plugin.getExperiments().add(experiment);
                             }
                         }
-                        System.out.println("Success! Number of experiments: " + plugin.getExperiments().size());
+                        LoggerUtil.debug("Success! Number of experiments: " + plugin.getExperiments().size());
                     } catch (JsonProcessingException ex) {
                         if (response.contains("Invalid user or server id")) {
-                            System.out.println("MCMetrics: Error occurred while fetching experiments: Invalid user or server id");
+                            LoggerUtil.warning("MCMetrics: Error occurred while fetching experiments: Invalid user or server id");
+                            LoggerUtil.warning("Make sure your server is properly set up by running /mcmetrics setup");
                             return;
                         }
 
-                        System.out.println("Error occurred while fetching experiments:");
+                        LoggerUtil.debug("Error occurred while fetching experiments:");
                         ex.printStackTrace();
                         throw new RuntimeException(ex);
                     }

@@ -2,6 +2,7 @@ package me.kicksquare.mcmspigot.types;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import me.kicksquare.mcmspigot.MCMSpigot;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,10 +30,9 @@ public class PlayerPayment {
         this.currency = currency;
         this.package_id = package_id;
         this.dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        System.out.println("dateTime: " + this.dateTime);
         this.uid = plugin.getMainConfig().getString("uid");
         this.server_id = plugin.getMainConfig().getString("server_id");
 
-        System.out.println("Server Id: " + server_id + " UID: " + uid);
+        LoggerUtil.debug("Server Id: " + server_id + " UID: " + uid);
     }
 }
