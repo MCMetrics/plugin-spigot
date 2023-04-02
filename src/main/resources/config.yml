@@ -17,5 +17,11 @@ enable-sentry: false
 # Currently used for the "Bedrock/Java users" experiment condition.
 bedrock-prefix: "*"
 
+# Add any UUIDs or player usernames here to exclude them from session tracking and experiments.
+exempt-players: [
+  "00000000-0000-0000-0000-000000000000",
+  "ExamplePlayerUserName"
+]
+
 # Sends additional debug information to the console.
 debug: false

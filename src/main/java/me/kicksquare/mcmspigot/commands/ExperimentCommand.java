@@ -3,6 +3,7 @@ package me.kicksquare.mcmspigot.commands;
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentTrigger;
+import me.kicksquare.mcmspigot.util.ExemptUtil;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
 import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
@@ -40,6 +41,11 @@ public class ExperimentCommand implements CommandExecutor {
 
         final String playerName = args[0];
         final Player player = plugin.getServer().getPlayer(playerName);
+
+        if (ExemptUtil.isExempt(player)) {
+            sender.sendMessage("Player is exempt from experiments! You can update this in config.yml.");
+            return true;
+        }
 
         // args 2 and later are the experiment name
         final String experimentName = String.join(" ", args).substring(args[0].length() + 1);

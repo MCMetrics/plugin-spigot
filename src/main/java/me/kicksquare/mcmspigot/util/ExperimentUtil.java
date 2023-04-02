@@ -29,6 +29,8 @@ public class ExperimentUtil {
     public static ExperimentVariant executeActions(Player p, Experiment experiment) {
         if (!plugin.getDataConfig().getBoolean("setup-complete")) return null;
 
+        if (ExemptUtil.isExempt(p)) return null;
+
         // loop through conditions; if any condition is not met, return
         String bedrockPrefix = plugin.getMainConfig().getString("bedrock-prefix");
         String playerName = p.getName();

@@ -5,6 +5,7 @@ import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentVariant;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentTrigger;
+import me.kicksquare.mcmspigot.util.ExemptUtil;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +45,8 @@ public class PapiExtension extends PlaceholderExpansion {
         if (!player.isOnline()) {
             return null;
         }
+
+        if (ExemptUtil.isExempt(player.getPlayer())) return "ERR_PLAYER_EXEMPT";
 
         ArrayList<Experiment> experiments = plugin.getExperiments();
         for (Experiment experiment : experiments) {

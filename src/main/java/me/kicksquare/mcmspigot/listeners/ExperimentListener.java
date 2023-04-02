@@ -3,6 +3,7 @@ package me.kicksquare.mcmspigot.listeners;
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentTrigger;
+import me.kicksquare.mcmspigot.util.ExemptUtil;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import org.bukkit.entity.Player;
@@ -25,6 +26,8 @@ public class ExperimentListener implements Listener {
         if (!SetupUtil.shouldExecuteExperiments()) return;
 
         Player p = e.getPlayer();
+
+        if (ExemptUtil.isExempt(p)) return;
 
         ArrayList<Experiment> experiments = plugin.getExperiments();
         for (Experiment experiment : experiments) {

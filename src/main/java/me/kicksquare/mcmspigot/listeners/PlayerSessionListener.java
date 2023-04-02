@@ -3,6 +3,7 @@ package me.kicksquare.mcmspigot.listeners;
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.SessionQueue;
 import me.kicksquare.mcmspigot.types.Session;
+import me.kicksquare.mcmspigot.util.ExemptUtil;
 import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import me.kicksquare.mcmspigot.util.UploadQueue;
@@ -33,6 +34,8 @@ public class PlayerSessionListener implements Listener {
         Player p = e.getPlayer();
         String address = e.getHostname().split(":")[0];
 
+        if (ExemptUtil.isExempt(p)) return;
+
         Session playerSession = new Session();
         playerSession.startSessionNow(p.getUniqueId(), address);
 
@@ -46,7 +49,11 @@ public class PlayerSessionListener implements Listener {
 
         final SessionQueue sessionQueue = plugin.getSessionQueue();
 
-        Session playerSession = sessionQueue.getAndRemoveSession(e.getPlayer().getUniqueId());
+        Player p = e.getPlayer();
+
+        if (ExemptUtil.isExempt(p)) return;
+
+        Session playerSession = sessionQueue.getAndRemoveSession(p.getUniqueId());
         if (playerSession == null) {
             LoggerUtil.warning("Player joined, but could not find session in queue from PlayerLoginEvent!");
             return;
@@ -61,6 +68,8 @@ public class PlayerSessionListener implements Listener {
 
         final SessionQueue sessionQueue = plugin.getSessionQueue();
         Player p = e.getPlayer();
+
+        if (ExemptUtil.isExempt(p)) return;
 
         Session playerSession = sessionQueue.getAndRemoveSession(p.getUniqueId());
         if (playerSession == null) {
