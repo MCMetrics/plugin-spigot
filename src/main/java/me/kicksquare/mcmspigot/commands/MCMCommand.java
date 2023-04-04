@@ -83,15 +83,19 @@ public class MCMCommand implements CommandExecutor {
 
     public static CompletableFuture<Boolean> reloadConfigAndFetchData() {
         return CompletableFuture.supplyAsync(() -> {
+            LoggerUtil.debug("Reloading config...");
+
             staticPlugin.getMainConfig().forceReload();
             staticPlugin.getDataConfig().forceReload();
 
             if (SetupUtil.isSetup()) {
+                LoggerUtil.debug("Server is set up! Fetching experiments and tasks...");
+
                 staticPlugin.getExperiments().clear();
                 ExperimentUtil.fetchExperiments();
                 TaskList.fetchTasks();
             } else {
-                staticPlugin.getLogger().warning("Reloaded plugin, but the plugin is not configured! Please run /mcmetrics setup <user id> <server id> to configure the plugin.");
+                LoggerUtil.warning("Reloaded plugin, but the plugin is not configured! Please run /mcmetrics setup <user id> <server id> to configure the plugin.");
             }
 
             return true;

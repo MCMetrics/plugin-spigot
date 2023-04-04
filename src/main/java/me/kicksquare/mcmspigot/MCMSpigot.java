@@ -31,8 +31,8 @@ public final class MCMSpigot extends JavaPlugin {
     private Config mainConfig;
     private Config dataConfig;
 
-    private final SessionQueue sessionQueue = new SessionQueue();
-    private final UploadQueue uploadQueue = new UploadQueue(this);
+    private SessionQueue sessionQueue;
+    private UploadQueue uploadQueue;
 
     private final ArrayList<Experiment> experiments = new ArrayList<>();
 
@@ -43,6 +43,9 @@ public final class MCMSpigot extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+
+        sessionQueue = new SessionQueue();
+        uploadQueue = new UploadQueue(this);
 
         mainConfig = SimplixBuilder
                 .fromFile(new File(getDataFolder(), "config.yml"))

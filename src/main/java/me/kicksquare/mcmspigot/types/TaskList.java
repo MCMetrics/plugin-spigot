@@ -37,7 +37,7 @@ public class TaskList {
         HttpUtil.makeAsyncGetRequest("api/server/getServerTasks", HttpUtil.getAuthHeadersFromConfig()).thenAccept(response -> {
             if (response != null) {
                 if (response.contains("ERROR_")) {
-                    plugin.getLogger().severe("Failed to fetch tasks from server. Response: " + response);
+                    LoggerUtil.severe("Failed to fetch tasks from server. Response: " + response);
                     return;
                 }
 
