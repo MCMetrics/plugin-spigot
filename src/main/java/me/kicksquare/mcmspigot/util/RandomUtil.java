@@ -36,6 +36,12 @@ public class RandomUtil {
      */
     public static double getProbabilityFromUuid(String uuid) {
         String firstTwoChars = uuid.substring(0, 2);
+        // the line above is problematic because bedrock player uuids always start with 0s
+        // if firstTwoChars equals 00, we'll use the last two characters instead
+        // we're not using the last two strings for everyone for compatibility with existing experiments
+        if (firstTwoChars.equals("00")) {
+            firstTwoChars = uuid.substring(uuid.length() - 2);
+        }
 
         return ((double) combinations.indexOf(firstTwoChars) % 100) / 100;
     }
