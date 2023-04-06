@@ -59,6 +59,9 @@ public class MCMCommand implements CommandExecutor {
             return true;
         } else if (args.length >= 1 && args[0].equalsIgnoreCase("setup")) {
             return setup(sender, args);
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("uploadall")) {
+            sender.sendMessage(colorize("&e&lMCMetrics &r&7Uploading all sessions in the upload queue..."));
+            plugin.getUploadQueue().uploadAll();
         } else if (args.length == 1 && args[0].equalsIgnoreCase("experiments")) {
             listExperiments(sender);
             return true;
@@ -71,10 +74,12 @@ public class MCMCommand implements CommandExecutor {
         }
 
         sender.sendMessage(colorize("&e&lMCMetrics" + " &7Version: &f" + plugin.getDescription().getVersion()));
+        sender.sendMessage(colorize("&7Currently tracking &e&l" + plugin.getUploadQueue().getSize() + " &7sessions in the upload queue"));
         sender.sendMessage(colorize("&7Plugin Commands:"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics reload &7- Reloads the config"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics experiments &7- Lists all active experiments"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics setup <user id> <server id> &7- Automatically configures the plugin"));
+        sender.sendMessage(colorize("&7 • &b/mcmetrics uploadall &7- Manually uploads all sessions in the upload queue - intended for testing."));
         sender.sendMessage(colorize("&7 • &b/mcmexperiment <player name> <experiment name> &7- Manually triggers an experiment. Console only."));
         sender.sendMessage(colorize("&7 • &b/mcmpayment <tebex|craftingstore> <player_uuid> <transaction_id> <amount> <currency> <package_id> &7- Manually triggers a payment. Console only."));
 

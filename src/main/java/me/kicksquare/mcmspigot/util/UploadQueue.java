@@ -47,4 +47,8 @@ public class UploadQueue {
     public void clear() {
         sessions.clear();
     }
+
+    public int getSize() {
+        return sessions.size();
+    }
 }

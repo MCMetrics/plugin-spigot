@@ -18,6 +18,7 @@ public class MCMetricsTabCompleter implements TabCompleter {
             // Complete first argument
             completions.add("setup");
             completions.add("reload");
+            completions.add("uploadall");
             completions.add("experiments");
             completions.add("help");
         } else if (args.length == 2) {
