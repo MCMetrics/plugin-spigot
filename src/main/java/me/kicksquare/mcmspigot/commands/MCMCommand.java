@@ -62,6 +62,7 @@ public class MCMCommand implements CommandExecutor {
         } else if (args.length == 1 && args[0].equalsIgnoreCase("uploadall")) {
             sender.sendMessage(colorize("&e&lMCMetrics &r&7Uploading all sessions in the upload queue..."));
             plugin.getUploadQueue().uploadAll();
+            return true;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("experiments")) {
             listExperiments(sender);
             return true;
