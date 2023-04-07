@@ -173,8 +173,10 @@ public class ExperimentUtil {
                             return;
                         }
 
-                        LoggerUtil.debug("Error occurred while fetching experiments:");
-                        ex.printStackTrace();
+                        if (plugin.getMainConfig().getBoolean("debug")) {
+                            LoggerUtil.severe("Error occurred while fetching task list: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
                         throw new RuntimeException(ex);
                     }
                 });

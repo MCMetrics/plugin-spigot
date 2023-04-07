@@ -86,6 +86,8 @@ public class HttpUtil {
     private static CompletableFuture<String> callRequest(Request request) {
         CompletableFuture<String> callRequestFuture = new CompletableFuture<>();
 
+        LoggerUtil.debug("Making async HTTP request with request body " + request.body() + " to the URL " + request.url());
+
         client.newCall(request).enqueue(new Callback() {
 
             @Override

@@ -54,11 +54,14 @@ public class TaskList {
                 } catch (JsonProcessingException exception) {
                     // if the message contains "Invalid user or server id", don't spam the console and just send one custom error
                     if (response.contains("Invalid user or server id")) {
-                        LoggerUtil.warning("Error occurred while fetching task list: Invalid user or server id");
-                        LoggerUtil.warning("Make sure your server is properly set up by running /mcmetrics setup");
+                        LoggerUtil.severe("Error occurred while fetching task list: Invalid user or server id");
+                        LoggerUtil.severe("Make sure your server is properly set up by running /mcmetrics setup");
                         return;
                     }
-                    exception.printStackTrace();
+                    if (plugin.getMainConfig().getBoolean("debug")) {
+                        LoggerUtil.severe("Error occurred while fetching task list: " + exception.getMessage());
+                        exception.printStackTrace();
+                    }
                 }
             }
         });
