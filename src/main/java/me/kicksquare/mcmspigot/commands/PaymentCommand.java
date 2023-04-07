@@ -49,9 +49,17 @@ public class PaymentCommand implements CommandExecutor {
         final String platform = args[0];
         final String player_uuid = args[1];
         final String transaction_id = args[2];
-        final String amount = args[3];
+        String amount = args[3];
         final String currency = args[4];
         final String package_id = args[5];
+
+        // transaction fee option from config
+        double amountDouble = Double.parseDouble(amount);
+        final double paymentFeeOption = plugin.getMainConfig().getDouble("payment-fee");
+        if (paymentFeeOption > 0) {
+            amountDouble = amountDouble * (1 - paymentFeeOption);
+            amount = String.valueOf(amountDouble);
+        }
 
         if (!platform.equalsIgnoreCase("tebex") && !platform.equalsIgnoreCase("craftingstore")) {
             sender.sendMessage("Invalid platform. Must be either 'tebex' or 'craftingstore'.");
