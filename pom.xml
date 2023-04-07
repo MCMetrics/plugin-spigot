@@ -6,10 +6,10 @@
 
     <groupId>me.kicksquare</groupId>
     <artifactId>mcm-spigot</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
-    <name>Plugin V2</name>
+    <name>MCM-Spigot-Plugin</name>
 
     <properties>
         <java.version>1.8</java.version>
