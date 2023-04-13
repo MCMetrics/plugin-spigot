@@ -76,17 +76,7 @@ public final class MCMSpigot extends JavaPlugin {
 
         // upload player count every 5 minutes
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            // need to do this check in case of a config reload without reload
-            if (!SetupUtil.shouldRecordPings()) return;
-            if (dataConfig.getInt("ping-interval") == 0) return;
-
-            try {
-                LoggerUtil.debug("uploading player count");
-                final String bodyString = "{\"playercount\": \"" + Bukkit.getOnlinePlayers().size() + "\"}";
-                HttpUtil.makeAsyncPostRequest("api/pings/insertPing", bodyString, HttpUtil.getAuthHeadersFromConfig());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            uploadPlayerCount();
         }, 0, 20L * 60 * dataConfig.getInt("ping-interval"));
 
         // enable bstats
@@ -109,6 +99,20 @@ public final class MCMSpigot extends JavaPlugin {
 
             // checks for exceptions matching this plugin name and uploads them to sentry
             Thread.setDefaultUncaughtExceptionHandler(new SentryExceptionHandler());
+        }
+    }
+
+    public void uploadPlayerCount() {
+        // need to do this check in case of a config reload without reload
+        if (!SetupUtil.shouldRecordPings()) return;
+        if (dataConfig.getInt("ping-interval") == 0) return;
+
+        try {
+            LoggerUtil.debug("uploading player count");
+            final String bodyString = "{\"playercount\": \"" + Bukkit.getOnlinePlayers().size() + "\"}";
+            HttpUtil.makeAsyncPostRequest("api/pings/insertPing", bodyString, HttpUtil.getAuthHeadersFromConfig());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

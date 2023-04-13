@@ -49,6 +49,7 @@ public class MCMCommand implements CommandExecutor {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(colorize("&e&lMCMetrics &r&7Reloading config..."));
             reloadConfigAndFetchData().thenAccept((result) -> {
+                plugin.uploadPlayerCount(); // manually force upload player count
                 if (result) {
                     sender.sendMessage(colorize("&a&lMCMetrics &r&7Reloaded successfully!"));
                 } else {
