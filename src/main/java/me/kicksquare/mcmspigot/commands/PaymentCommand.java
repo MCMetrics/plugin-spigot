@@ -36,7 +36,7 @@ public class PaymentCommand implements CommandExecutor {
         }
 
         // mcmpayment <tebex|craftingstore> <username> <transaction_id> <amount> <currency>
-        if (args.length != 6) {
+        if (args.length != 5) {
             sender.sendMessage("Usage: /mcmpayment <tebex|craftingstore> <username> <transaction_id> <amount> <currency>");
             return true;
         }
