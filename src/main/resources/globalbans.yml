@@ -1,0 +1,38 @@
+# Global Bans is a feature that gives your plugin access to
+# a database of dupers, botters, and other rule breakers and
+# automatically bans them from your server.
+
+# This is an optional feature; it is only available to Growth
+# subscribers who have applied and been accepted to the
+# Global Bans feature. If you are not using this feature,
+# you can safely ignore this file.
+
+# Learn more: https://mcmetrics.net
+
+# Only set to true if you have been accepted to the Global Bans feature.
+enabled: false
+
+# Reasons to auto-ban players for. If a player is banned,
+# but the reason is set to false, nothing will happen. This
+# only affects new bans; existing bans will still be enforced.
+dupe: true # Duping items
+lag: true # Building lag machines
+discrimination: true # Discrimination
+botting: true # Botting/Spam Joining
+
+
+# Custom commands to run when a player is banned.
+# Add your ban command(s) here.
+# Available placeholders: ${player}, ${reason}, ${uuid}, ${ip}
+# Example: "litebans:ban ${player} ${reason}"
+commands:
+  - "ban ${player} You are globally banned for ${reason}!"
+
+
+# Discord Webhook Feature - automatically post to a Discord channel
+# when a player is blocked from logging in due to a Global Ban.
+# Available placeholders: ${player}, ${reason}, ${uuid}, ${ip}
+discord-webhook-enabled: false
+discord-webhook-url: ""
+discord-webhook-title: "Global Bans - Login Blocked"
+discord-webhook-description: "${player} was blocked from logging in due to a global ban."

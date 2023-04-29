@@ -10,6 +10,7 @@ import me.kicksquare.mcmspigot.commands.MCMCommand;
 import me.kicksquare.mcmspigot.commands.MCMetricsTabCompleter;
 import me.kicksquare.mcmspigot.commands.PaymentCommand;
 import me.kicksquare.mcmspigot.listeners.ExperimentListener;
+import me.kicksquare.mcmspigot.listeners.GlobalBansListener;
 import me.kicksquare.mcmspigot.listeners.PlayerSessionListener;
 import me.kicksquare.mcmspigot.papi.PapiExtension;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
@@ -30,6 +31,7 @@ public final class MCMSpigot extends JavaPlugin {
     private static MCMSpigot plugin; // used in ExperimentUtil
     private Config mainConfig;
     private Config dataConfig;
+    private Config bansConfig;
 
     private SessionQueue sessionQueue;
     private UploadQueue uploadQueue;
@@ -61,6 +63,13 @@ public final class MCMSpigot extends JavaPlugin {
                 .setReloadSettings(ReloadSettings.MANUALLY)
                 .createConfig();
 
+        bansConfig = SimplixBuilder
+                .fromFile(new File(getDataFolder(), "globalbans.yml"))
+                .addInputStreamFromResource("data.yml")
+                .setDataType(DataType.SORTED)
+                .setReloadSettings(ReloadSettings.MANUALLY)
+                .createConfig();
+
 
         // standard command (reload, setup, etc)
         getCommand("mcmetrics").setExecutor(new MCMCommand(this));
@@ -69,6 +78,7 @@ public final class MCMSpigot extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerSessionListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ExperimentListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new GlobalBansListener(this), this);
         getCommand("mcmexperiment").setExecutor(new ExperimentCommand(this));
         getCommand("mcmpayment").setExecutor(new PaymentCommand(this));
 
@@ -134,6 +144,10 @@ public final class MCMSpigot extends JavaPlugin {
 
     public Config getDataConfig() {
         return dataConfig;
+    }
+
+    public Config getBansConfig() {
+        return bansConfig;
     }
 
     @Override

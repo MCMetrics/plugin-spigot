@@ -8,6 +8,7 @@ ping-interval: 60
 record-payments: true
 execute-experiments: true
 bulk-session-threshold: 1
+global-bans: false
 
 # Only used during development, the plugin will completely break if you this is set to true.
 dev-mode: false
