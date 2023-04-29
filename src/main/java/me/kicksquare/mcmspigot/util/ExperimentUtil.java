@@ -43,27 +43,48 @@ public class ExperimentUtil {
 
                     switch (condition.comparisonType) {
                         case EQUALS:
-                            if (!papiResult.equals(value)) return null;
+                            if (!papiResult.equals(value)) {
+                                LoggerUtil.debug("PAPI EQUALS condition not met for player " + p.getName() + ". Expected " + value + ", got " + papiResult);
+                                return null;
+                            }
                             break;
                         case CONTAINS:
-                            if (!papiResult.contains(value)) return null;
+                            if (!papiResult.contains(value)) {
+                                LoggerUtil.debug("PAPI CONTAINS condition not met for player " + p.getName() + ". Expected " + value + ", got " + papiResult);
+                                return null;
+                            }
                             break;
                         case NOT_CONTAINS:
-                            if (papiResult.contains(value)) return null;
+                            if (papiResult.contains(value)) {
+                                LoggerUtil.debug("PAPI NOT_CONTAINS condition not met for player " + p.getName() + ". Expected " + value + ", got " + papiResult);
+                                return null;
+                            }
                             break;
                         case GREATER_THAN:
-                            if (Integer.parseInt(placeholder) <= Integer.parseInt(value)) return null;
+                            if (Integer.parseInt(placeholder) <= Integer.parseInt(value)) {
+                                LoggerUtil.debug("PAPI GREATER_THAN condition not met for player " + p.getName() + ". Expected " + value + ", got " + papiResult);
+                                return null;
+                            }
                             break;
                         case LESS_THAN:
-                            if (Integer.parseInt(placeholder) >= Integer.parseInt(value)) return null;
+                            if (Integer.parseInt(placeholder) >= Integer.parseInt(value)) {
+                                LoggerUtil.debug("PAPI LESS_THAN condition not met for player " + p.getName() + ". Expected " + value + ", got " + papiResult);
+                                return null;
+                            }
                             break;
                     }
                     break;
                 case BEDROCK:
-                    if (!playerName.startsWith(bedrockPrefix)) return null;
+                    if (!playerName.startsWith(bedrockPrefix)) {
+                        LoggerUtil.debug("BEDROCK condition not met for player " + p.getName() + ". Expected " + bedrockPrefix + ", got " + playerName);
+                        return null;
+                    }
                     break;
                 case JAVA:
-                    if (playerName.startsWith(bedrockPrefix)) return null;
+                    if (playerName.startsWith(bedrockPrefix)) {
+                        LoggerUtil.debug("JAVA condition not met for player " + p.getName() + ". Expected " + bedrockPrefix + ", got " + playerName);
+                        return null;
+                    }
                     break;
             }
         }
