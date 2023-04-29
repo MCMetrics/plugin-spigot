@@ -35,9 +35,9 @@ public class PaymentCommand implements CommandExecutor {
             return true;
         }
 
-        // mcmpayment <tebex|craftingstore> <player_uuid> <transaction_id> <amount> <currency> <package_id>
+        // mcmpayment <tebex|craftingstore> <username> <transaction_id> <amount> <currency>
         if (args.length != 6) {
-            sender.sendMessage("Usage: /mcmpayment <tebex|craftingstore> <player_uuid> <transaction_id> <amount> <currency> <package_id>");
+            sender.sendMessage("Usage: /mcmpayment <tebex|craftingstore> <username> <transaction_id> <amount> <currency>");
             return true;
         }
 
@@ -47,11 +47,10 @@ public class PaymentCommand implements CommandExecutor {
         }
 
         final String platform = args[0];
-        final String player_uuid = args[1];
+        final String username = args[1];
         final String transaction_id = args[2];
         String amount = args[3];
         final String currency = args[4];
-        final String package_id = args[5];
 
         // transaction fee option from config
         double amountDouble = Double.parseDouble(amount);
@@ -61,12 +60,13 @@ public class PaymentCommand implements CommandExecutor {
             amount = String.valueOf(amountDouble);
         }
 
+        // validate platform
         if (!platform.equalsIgnoreCase("tebex") && !platform.equalsIgnoreCase("craftingstore")) {
             sender.sendMessage("Invalid platform. Must be either 'tebex' or 'craftingstore'.");
             return true;
         }
 
-        PlayerPayment playerPayment = new PlayerPayment(plugin, platform, player_uuid, transaction_id, amount, currency, package_id);
+        PlayerPayment playerPayment = new PlayerPayment(plugin, platform, username, transaction_id, amount, currency);
 
         // get the payment as a json string
         String jsonString;
@@ -79,10 +79,10 @@ public class PaymentCommand implements CommandExecutor {
 
         LoggerUtil.debug("Uploading payment session now... " + jsonString);
 
-        HttpUtil.makeAsyncPostRequest("api/payments/insertPayment", jsonString, HttpUtil.getAuthHeadersFromConfig());
+        HttpUtil.makeAsyncPostRequest("api/payments/insertUsernamePayment", jsonString, HttpUtil.getAuthHeadersFromConfig());
 
         // payments trigger for ab tests
-        Player p = Bukkit.getPlayer(player_uuid);
+        Player p = Bukkit.getPlayer(username);
         if (p != null) {
             ArrayList<Experiment> experiments = plugin.getExperiments();
             for (Experiment experiment : experiments) {
