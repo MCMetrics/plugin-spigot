@@ -36,6 +36,7 @@ public class GlobalBansListener implements Listener {
 
         // make a request to the api to get a list of bans for this player
         final String bodyString = "{\"uuid\": \"" + p.getUniqueId() + "\"}";
+        LoggerUtil.debug("Checking global bans for player " + p.getName() + ". Body: " + bodyString);
         HttpUtil.makeAsyncPostRequest("api/bans/serverPlayerLookup", bodyString, HttpUtil.getAuthHeadersFromConfig())
                 .thenAccept(response -> {
                     if (response == null) {
@@ -48,66 +49,74 @@ public class GlobalBansListener implements Listener {
 
                         GlobalBansResponseEntry[] bans = mapper.readValue(response, GlobalBansResponseEntry[].class);
 
-                        // only ban if there is at least one entry with a reason that is enabled in the config
-                        boolean shouldBan = false;
-                        String reason = "";
-                        for (GlobalBansResponseEntry ban : bans) {
-                            switch (ban.ban_reason) {
-                                case LAG:
-                                    if (plugin.getBansConfig().getBoolean("lag")) {
-                                        shouldBan = true;
-                                        reason = ban.ban_reason.toString();
-                                    }
-                                    break;
-                                case DUPE:
-                                    if (plugin.getBansConfig().getBoolean("dupe")) {
-                                        shouldBan = true;
-                                        reason = ban.ban_reason.toString();
-                                    }
-                                    break;
-                                case BOTTING:
-                                    if (plugin.getBansConfig().getBoolean("botting")) {
-                                        shouldBan = true;
-                                        reason = ban.ban_reason.toString();
-                                    }
-                                    break;
-                                case DISCRIMINATION:
-                                    if (plugin.getBansConfig().getBoolean("discrimination")) {
-                                        shouldBan = true;
-                                        reason = ban.ban_reason.toString();
-                                    }
-                                    break;
+                        System.out.println(3);
+
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            System.out.println(5);
+                            // only ban if there is at least one entry with a reason that is enabled in the config
+                            boolean shouldBan = false;
+                            String reason = "";
+                            for (GlobalBansResponseEntry ban : bans) {
+                                switch (ban.ban_reason) {
+                                    case LAG:
+                                        if (plugin.getBansConfig().getBoolean("lag")) {
+                                            shouldBan = true;
+                                            reason = ban.ban_reason.toString();
+                                        }
+                                        break;
+                                    case DUPE:
+                                        if (plugin.getBansConfig().getBoolean("dupe")) {
+                                            shouldBan = true;
+                                            reason = ban.ban_reason.toString();
+                                        }
+                                        break;
+                                    case BOTTING:
+                                        if (plugin.getBansConfig().getBoolean("botting")) {
+                                            shouldBan = true;
+                                            reason = ban.ban_reason.toString();
+                                        }
+                                        break;
+                                    case DISCRIMINATION:
+                                        if (plugin.getBansConfig().getBoolean("discrimination")) {
+                                            shouldBan = true;
+                                            reason = ban.ban_reason.toString();
+                                        }
+                                        break;
+                                }
                             }
-                        }
 
-                        if (!shouldBan) {
-                            LoggerUtil.debug("Skipping ban for player " + p.getName() + " because no enabled ban reasons were found.");
-                            return;
-                        }
+                            if (!shouldBan) {
+                                LoggerUtil.debug("Skipping ban for player " + p.getName() + " because no enabled ban reasons were found.");
+                                return;
+                            }
 
-                        // run commands
-                        List<String> commands = plugin.getBansConfig().getStringList("commands");
-                        for (String rawCommand : commands) {
-                            String command = replaceBansPlaceholders(rawCommand, p, reason);
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-                        }
+                            System.out.println(4);
 
-                        // send discord webhook if enabled
-                        if (plugin.getBansConfig().getBoolean("discord-webhook-enabled")) {
-                            String title = replaceBansPlaceholders(plugin.getBansConfig().getString("discord-webhook-title"), p, reason);
-                            String description = replaceBansPlaceholders(plugin.getBansConfig().getString("discord-webhook-description"), p, reason);
+                            // run commands
+                            List<String> commands = plugin.getBansConfig().getStringList("commands");
+                            for (String rawCommand : commands) {
+                                String command = replaceBansPlaceholders(rawCommand, p, reason);
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                            }
 
-                            WebhookClient webhookClient = WebhookClient.withUrl(plugin.getBansConfig().getString("discord-webhook-url"));
-                            WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
+                            // send discord webhook if enabled
+                            if (plugin.getBansConfig().getBoolean("discord-webhook-enabled")) {
+                                String title = replaceBansPlaceholders(plugin.getBansConfig().getString("discord-webhook-title"), p, reason);
+                                String description = replaceBansPlaceholders(plugin.getBansConfig().getString("discord-webhook-description"), p, reason);
 
-                            embedBuilder.setTitle(new WebhookEmbed.EmbedTitle(title, null));
-                            embedBuilder.setDescription(description);
+                                WebhookClient webhookClient = WebhookClient.withUrl(plugin.getBansConfig().getString("discord-webhook-url"));
+                                WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
 
-                            webhookClient.send(embedBuilder.build());
-                            webhookClient.close();
-                        }
+                                embedBuilder.setTitle(new WebhookEmbed.EmbedTitle(title, null));
+                                embedBuilder.setDescription(description);
+
+                                webhookClient.send(embedBuilder.build());
+                                webhookClient.close();
+                            }
+                        });
 
                     } catch (JsonProcessingException exception) {
+                        System.out.println(1);
                         // if the message contains "Invalid user or server id", don't spam the console and just send one custom error
                         if (response.contains("Invalid user or server id")) {
                             LoggerUtil.severe("Error occurred while fetching player ban status: Invalid user or server id");
@@ -118,6 +127,7 @@ public class GlobalBansListener implements Listener {
                             LoggerUtil.severe("Error occurred while fetching player ban status: " + exception.getMessage());
                             exception.printStackTrace();
                         }
+                        System.out.println(2);
                     }
                 });
     }

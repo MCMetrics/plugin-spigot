@@ -65,7 +65,7 @@ public final class MCMSpigot extends JavaPlugin {
 
         bansConfig = SimplixBuilder
                 .fromFile(new File(getDataFolder(), "globalbans.yml"))
-                .addInputStreamFromResource("data.yml")
+                .addInputStreamFromResource("globalbans.yml")
                 .setDataType(DataType.SORTED)
                 .setReloadSettings(ReloadSettings.MANUALLY)
                 .createConfig();
