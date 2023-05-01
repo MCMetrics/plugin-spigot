@@ -22,14 +22,23 @@ public class TaskList {
     public boolean executeExperiments;
     @JsonProperty("bulkSessionThreshold")
     public int bulkSessionThreshold;
+    @JsonProperty("globalBans")
+    public boolean globalBans;
 
-    public TaskList(@JsonProperty("recordSessions") boolean recordSessions, @JsonProperty("recordPings") boolean recordPings, @JsonProperty("pingInterval") int pingInterval, @JsonProperty("recordPayments") boolean recordPayments, @JsonProperty("executeExperiments") boolean executeExperiments, @JsonProperty("bulkSessionThreshold") int bulkSessionThreshold) {
+    public TaskList(@JsonProperty("recordSessions") boolean recordSessions,
+                    @JsonProperty("recordPings") boolean recordPings,
+                    @JsonProperty("pingInterval") int pingInterval,
+                    @JsonProperty("recordPayments") boolean recordPayments,
+                    @JsonProperty("executeExperiments") boolean executeExperiments,
+                    @JsonProperty("bulkSessionThreshold") int bulkSessionThreshold,
+                    @JsonProperty("globalBans") boolean globalBans) {
         this.recordSessions = recordSessions;
         this.recordPings = recordPings;
         this.pingInterval = pingInterval;
         this.recordPayments = recordPayments;
         this.executeExperiments = executeExperiments;
         this.bulkSessionThreshold = bulkSessionThreshold;
+        this.globalBans = globalBans;
     }
 
     public static void fetchTasks() {
@@ -51,6 +60,7 @@ public class TaskList {
                     plugin.getDataConfig().set("record-payments", tasks.recordPayments);
                     plugin.getDataConfig().set("execute-experiments", tasks.executeExperiments);
                     plugin.getDataConfig().set("bulk-session-threshold", tasks.bulkSessionThreshold);
+                    plugin.getDataConfig().set("global-bans", tasks.globalBans);
                 } catch (JsonProcessingException exception) {
                     // if the message contains "Invalid user or server id", don't spam the console and just send one custom error
                     if (response.contains("Invalid user or server id")) {

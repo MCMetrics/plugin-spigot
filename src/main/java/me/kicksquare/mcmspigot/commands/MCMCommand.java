@@ -94,6 +94,7 @@ public class MCMCommand implements CommandExecutor {
 
             staticPlugin.getMainConfig().forceReload();
             staticPlugin.getDataConfig().forceReload();
+            staticPlugin.getBansConfig().forceReload();
 
             if (SetupUtil.isSetup()) {
                 LoggerUtil.debug("Server is set up! Fetching experiments and tasks...");

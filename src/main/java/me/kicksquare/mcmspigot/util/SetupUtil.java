@@ -8,6 +8,7 @@ public class SetupUtil {
     private static final MCMSpigot plugin = MCMSpigot.getPlugin();
     static Config mainConfig = plugin.getMainConfig();
     static Config dataConfig = plugin.getDataConfig();
+    static Config bansConfig = plugin.getBansConfig();
 
     public static boolean isSetup() {
         return dataConfig.getBoolean("setup-complete") &&
@@ -28,5 +29,9 @@ public class SetupUtil {
 
     public static boolean shouldExecuteExperiments() {
         return isSetup() && dataConfig.getBoolean("execute-experiments");
+    }
+
+    public static boolean shouldCheckGlobalBans() {
+        return isSetup() && dataConfig.getBoolean("global-bans") && bansConfig.getBoolean("enabled");
     }
 }
