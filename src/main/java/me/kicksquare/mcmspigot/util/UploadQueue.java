@@ -11,7 +11,7 @@ import java.util.ArrayList;
 // this tracks sessions that are already finished (user logged off) to be uploaded in bulk later on
 public class UploadQueue {
     private static final ObjectMapper mapper = new ObjectMapper();
-    private MCMSpigot plugin;
+    private final MCMSpigot plugin;
 
     public ArrayList<Session> sessions;
 

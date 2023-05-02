@@ -73,6 +73,14 @@ public class MCMCommand implements CommandExecutor {
             plugin.getMainConfig().forceReload();
             sender.sendMessage(colorize("&a&lSentry Enabled! &r&7Thank you for helping us improve the plugin!"));
             return true;
+        } else if (args.length >= 1 && args[0].equalsIgnoreCase("bans")) {
+            if (!plugin.getBansConfig().getBoolean("enabled")) {
+                sender.sendMessage(colorize("&c&lMCMetrics &r&7Global Bans is not enabled!"));
+                return true;
+            }
+
+            // returns false if the help message needs to be shown
+            if (BansExecutor.executeBansSubcommand(sender, args)) return true;
         }
 
         sender.sendMessage(colorize("&e&lMCMetrics" + " &7Version: &f" + plugin.getDescription().getVersion()));
@@ -84,6 +92,11 @@ public class MCMCommand implements CommandExecutor {
         sender.sendMessage(colorize("&7 • &b/mcmetrics uploadall &7- Manually uploads all sessions in the upload queue - intended for testing."));
         sender.sendMessage(colorize("&7 • &b/mcmexperiment <player name> <experiment name> &7- Manually triggers an experiment. Console only."));
         sender.sendMessage(colorize("&7 • &b/mcmpayment <tebex|craftingstore> <player_uuid> <transaction_id> <amount> <currency> <package_id> &7- Manually triggers a payment. Console only."));
+        if (plugin.getBansConfig().getBoolean("enabled")) {
+            sender.sendMessage(colorize("&7Global Bans Commands:"));
+            sender.sendMessage(colorize("&7 • &b/mcmetrics bans add <player name/uuid> <reason> <evidence> &7- Bans a player using MCMetrics Global Bans"));
+            sender.sendMessage(colorize("&7 • &b/mcmetrics bans lookup <player name/uuid> &7- Check a player for MCMetrics Global Bans flags"));
+        }
 
         return true;
     }
