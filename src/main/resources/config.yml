@@ -9,10 +9,6 @@ uid: ""
 # This option needs a restart to take effect.
 enable-bstats: true
 
-# Should the plugin send anonymous error reports to Sentry? This helps us track and fix plugin errors.
-# This option needs a restart to take effect.
-enable-sentry: false
-
 # The prefix used to determine whether a player is on Bedrock using GeyserMC.
 # Currently used for the "Bedrock/Java users" experiment condition.
 bedrock-prefix: "*"

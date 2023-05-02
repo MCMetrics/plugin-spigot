@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-import static me.kicksquare.mcmspigot.util.ClickableMessageUtil.sendClickableCommand;
 import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
 
 public class MCMCommand implements CommandExecutor {
@@ -66,12 +65,6 @@ public class MCMCommand implements CommandExecutor {
             return true;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("experiments")) {
             listExperiments(sender);
-            return true;
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("enablesentry")) {
-            sender.sendMessage("Enabling Sentry...");
-            plugin.getMainConfig().set("enable-sentry", true);
-            plugin.getMainConfig().forceReload();
-            sender.sendMessage(colorize("&a&lSentry Enabled! &r&7Thank you for helping us improve the plugin!"));
             return true;
         } else if (args.length >= 1 && args[0].equalsIgnoreCase("bans")) {
             if (!plugin.getBansConfig().getBoolean("enabled")) {
@@ -155,11 +148,6 @@ public class MCMCommand implements CommandExecutor {
                 return true;
             }).thenAccept((result) -> {
                 sender.sendMessage("Server configured successfully!");
-                if (sender instanceof Player) {
-                    sendClickableCommand((Player) sender, "&e&lOptional Sentry Opt-In: &r&7Click here to enable anonymous error-reporting via Sentry (you can change this later in the config).", "mcmetrics enablesentry");
-                } else {
-                    sender.sendMessage("Optional Sentry Opt-In: Run 'mcmetrics enablesentry' to enable anonymous error-reporting via Sentry (you can change this later in the config).");
-                }
             });
 
             return true;

@@ -4,7 +4,6 @@ import de.leonhard.storage.Config;
 import de.leonhard.storage.SimplixBuilder;
 import de.leonhard.storage.internal.settings.DataType;
 import de.leonhard.storage.internal.settings.ReloadSettings;
-import io.sentry.Sentry;
 import me.kicksquare.mcmspigot.commands.ExperimentCommand;
 import me.kicksquare.mcmspigot.commands.MCMCommand;
 import me.kicksquare.mcmspigot.commands.MCMetricsTabCompleter;
@@ -97,18 +96,6 @@ public final class MCMSpigot extends JavaPlugin {
         // enable papi
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PapiExtension(this).register();
-        }
-
-        // enable sentry error reporting
-        if (mainConfig.getBoolean("enable-sentry")) {
-            Sentry.init(options -> {
-                options.setDsn("https://b157b0cab7ba42cd92c83a583e57af66@o4504532201046017.ingest.sentry.io/4504540638347264");
-                options.setTracesSampleRate(0.1);
-                options.setDebug(false);
-            });
-
-            // checks for exceptions matching this plugin name and uploads them to sentry
-            Thread.setDefaultUncaughtExceptionHandler(new SentryExceptionHandler());
         }
     }
 
