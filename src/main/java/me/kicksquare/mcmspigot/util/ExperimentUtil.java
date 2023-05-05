@@ -23,10 +23,15 @@ import java.util.Objects;
 import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
 
 public class ExperimentUtil {
-
     private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 
-    public static ExperimentVariant executeActions(Player p, Experiment experiment) {
+    /**
+     * @param p            The player to execute the actions on
+     * @param experiment   The experiment to execute
+     * @param variantIndex The variant index to execute. If -1, a random variant will be chosen
+     * @return
+     */
+    public static ExperimentVariant executeActions(Player p, Experiment experiment, int variantIndex) {
         if (!plugin.getDataConfig().getBoolean("setup-complete")) return null;
 
         if (ExemptUtil.isExempt(p)) return null;
@@ -75,13 +80,13 @@ public class ExperimentUtil {
                     }
                     break;
                 case BEDROCK:
-                    if (!playerName.startsWith(bedrockPrefix)) {
+                    if (!BedrockUtil.isBedrockUuid(p.getUniqueId().toString())) {
                         LoggerUtil.debug("BEDROCK condition not met for player " + p.getName() + ". Expected " + bedrockPrefix + ", got " + playerName);
                         return null;
                     }
                     break;
                 case JAVA:
-                    if (playerName.startsWith(bedrockPrefix)) {
+                    if (BedrockUtil.isBedrockUuid(p.getUniqueId().toString())) {
                         LoggerUtil.debug("JAVA condition not met for player " + p.getName() + ". Expected " + bedrockPrefix + ", got " + playerName);
                         return null;
                     }
@@ -91,34 +96,26 @@ public class ExperimentUtil {
 
         ExperimentVariant[] variants = experiment.getVariants();
 
-        ArrayList<Double> probabilitiesOfVariants = new ArrayList<>();
-        for (ExperimentVariant variant : variants) {
-            probabilitiesOfVariants.add(variant.probability);
-        }
+        ExperimentVariant selectedVariant = null;
 
-        int selectedVariantIndex = RandomUtil.randomWeightedElement(probabilitiesOfVariants);
-        ExperimentVariant selectedVariant = variants[selectedVariantIndex];
-
-        // if consistentVariantForUuid is true, then try to get the consistent variant (random is fallback)
-        if (experiment.isConsistentVariantForUuid()) {
-            double probability = RandomUtil.getProbabilityFromUuid(p.getUniqueId().toString());
-
-            double maxProbability = 0;
-            String variantsRandomlyOrdered = String.valueOf(experiment.getVariantsRandomlyOrdered());
-            for (int i = 0; i < variantsRandomlyOrdered.length(); i++) {
-                int variantIndex = Integer.parseInt(String.valueOf(variantsRandomlyOrdered.charAt(i))) - 1;
-
-                maxProbability += variants[variantIndex].probability;
-
-                if (probability <= maxProbability && probability > maxProbability - variants[variantIndex].probability) {
-                    selectedVariant = variants[variantIndex];
+        if (variantIndex != -1) {
+            for (ExperimentVariant variant : variants) {
+                if (variant.variant == variantIndex) {
+                    selectedVariant = variant;
+                    break;
                 }
             }
+
+            if (selectedVariant == null) {
+                LoggerUtil.debug("Experiment: Variant " + variantIndex + " not found!");
+                return null;
+            }
+        } else {
+            selectedVariant = getSelectedVariant(p, experiment, variants);
         }
 
         // convert delay in seconds to ticks
         int delay = selectedVariant.delay * 20;
-
 
         ExperimentAction actionType = selectedVariant.actionType;
         String actionValue = selectedVariant.actionValue;
@@ -169,6 +166,34 @@ public class ExperimentUtil {
             plugin.getSessionQueue().addSession(p.getUniqueId(), playerSession);
         }
 
+        return selectedVariant;
+    }
+
+    private static ExperimentVariant getSelectedVariant(Player p, Experiment experiment, ExperimentVariant[] variants) {
+        ArrayList<Double> probabilitiesOfVariants = new ArrayList<>();
+        for (ExperimentVariant variant : variants) {
+            probabilitiesOfVariants.add(variant.probability);
+        }
+
+        int selectedVariantIndex = RandomUtil.randomWeightedElement(probabilitiesOfVariants);
+        ExperimentVariant selectedVariant = variants[selectedVariantIndex];
+
+        // if consistentVariantForUuid is true, then try to get the consistent variant (random is fallback)
+        if (experiment.isConsistentVariantForUuid()) {
+            double probability = RandomUtil.getProbabilityFromUuid(p.getUniqueId().toString());
+
+            double maxProbability = 0;
+            String variantsRandomlyOrdered = String.valueOf(experiment.getVariantsRandomlyOrdered());
+            for (int i = 0; i < variantsRandomlyOrdered.length(); i++) {
+                int variantIndex = Integer.parseInt(String.valueOf(variantsRandomlyOrdered.charAt(i))) - 1;
+
+                maxProbability += variants[variantIndex].probability;
+
+                if (probability <= maxProbability && probability > maxProbability - variants[variantIndex].probability) {
+                    selectedVariant = variants[variantIndex];
+                }
+            }
+        }
         return selectedVariant;
     }
 
