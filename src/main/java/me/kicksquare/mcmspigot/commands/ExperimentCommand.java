@@ -60,7 +60,7 @@ public class ExperimentCommand implements CommandExecutor {
             LoggerUtil.debug("checking experiment " + experiment.name + " with trigger " + experiment.trigger);
             if (experiment.name.equalsIgnoreCase(experimentName) && experiment.trigger == ExperimentTrigger.COMMAND) {
                 LoggerUtil.debug("Found experiment!");
-                ExperimentUtil.executeActions(player, experiment);
+                ExperimentUtil.executeActions(player, experiment, -1);
                 sender.sendMessage("Experiment executed successfully!");
                 return true;
             }

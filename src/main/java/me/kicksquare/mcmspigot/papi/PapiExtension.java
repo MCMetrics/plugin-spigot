@@ -32,7 +32,7 @@ public class PapiExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.2.2";
+        return "1.2.3";
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PapiExtension extends PlaceholderExpansion {
         for (Experiment experiment : experiments) {
             if (experiment.name.equalsIgnoreCase(params)) {
                 if (experiment.trigger == ExperimentTrigger.PAPI) {
-                    ExperimentVariant selectedVariant = ExperimentUtil.executeActions(player.getPlayer(), experiment);
+                    ExperimentVariant selectedVariant = ExperimentUtil.executeActions(player.getPlayer(), experiment, -1);
                     // return the variant id that was chosen for the user
                     if (selectedVariant != null) {
                         return String.valueOf(selectedVariant.variant);

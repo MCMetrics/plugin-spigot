@@ -10,6 +10,7 @@ import me.kicksquare.mcmspigot.util.ExperimentUtil;
 import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -66,6 +67,8 @@ public class MCMCommand implements CommandExecutor {
         } else if (args.length == 1 && args[0].equalsIgnoreCase("experiments")) {
             listExperiments(sender);
             return true;
+        } else if (args[0].equalsIgnoreCase("testexperiment")) {
+            return testExperiment(sender, args);
         } else if (args.length >= 1 && args[0].equalsIgnoreCase("bans")) {
             if (!plugin.getBansConfig().getBoolean("enabled")) {
                 sender.sendMessage(colorize("&c&lMCMetrics &r&7Global Bans is not enabled!"));
@@ -83,6 +86,7 @@ public class MCMCommand implements CommandExecutor {
         sender.sendMessage(colorize("&7 • &b/mcmetrics experiments &7- Lists all active experiments"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics setup <user id> <server id> &7- Automatically configures the plugin"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics uploadall &7- Manually uploads all sessions in the upload queue - intended for testing."));
+        sender.sendMessage(colorize("&7 • &b/mcmetrics testexperiment <player name> <experiment name> <variant> &7- Manually triggers an experiment with a set variant. Intended for testing."));
         sender.sendMessage(colorize("&7 • &b/mcmexperiment <player name> <experiment name> &7- Manually triggers an experiment. Console only."));
         sender.sendMessage(colorize("&7 • &b/mcmpayment <tebex|craftingstore> <player_uuid> <transaction_id> <amount> <currency> <package_id> &7- Manually triggers a payment. Console only."));
         if (plugin.getBansConfig().getBoolean("enabled")) {
@@ -94,9 +98,65 @@ public class MCMCommand implements CommandExecutor {
         return true;
     }
 
+    private boolean testExperiment(CommandSender sender, String[] args) {
+        if (args.length != 4) {
+            sender.sendMessage(colorize("&cUsage: &b/mcmetrics testexperiment <player name> <experiment name> <variant>"));
+            return true;
+        }
+
+        String playerName = args[1];
+        String experimentName = args[2];
+        String variant = args[3];
+
+        Player targetPlayer = Bukkit.getPlayer(playerName);
+        if (targetPlayer == null) {
+            sender.sendMessage(colorize("&cPlayer not found!"));
+            return true;
+        }
+
+        ArrayList<Experiment> experiments = plugin.getExperiments();
+        Experiment experiment = null;
+        for (Experiment e : experiments) {
+            if (e.name.equalsIgnoreCase(experimentName)) {
+                experiment = e;
+                break;
+            }
+        }
+
+        if (experiment == null) {
+            sender.sendMessage(colorize("&cExperiment not found!"));
+            return true;
+        }
+
+        ExperimentVariant targetVariant = null;
+        for (ExperimentVariant v : experiment.variants) {
+            if (v.variant == Integer.parseInt(variant)) {
+                targetVariant = v;
+                break;
+            }
+        }
+
+        if (targetVariant == null) {
+            sender.sendMessage(colorize("&cVariant not found!"));
+            return true;
+        }
+
+        ExperimentVariant selectedVariant = ExperimentUtil.executeActions(targetPlayer, experiment, targetVariant.variant);
+
+        if (selectedVariant == null) {
+            sender.sendMessage(colorize("&cFailed to execute experiment! Please check the console for more information."));
+            return true;
+        } else {
+            sender.sendMessage(colorize("&aExperiment executed successfully!"));
+            return true;
+        }
+    }
+
     public static CompletableFuture<Boolean> reloadConfigAndFetchData() {
         return CompletableFuture.supplyAsync(() -> {
             LoggerUtil.debug("Reloading config...");
+
+            staticPlugin.getMainConfig().addDefaultsFromInputStream(staticPlugin.getResource("resources/config.yml"));
 
             staticPlugin.getMainConfig().forceReload();
             staticPlugin.getDataConfig().forceReload();
@@ -116,9 +176,9 @@ public class MCMCommand implements CommandExecutor {
         });
     }
 
-    public boolean setup(CommandSender sender, String[] args) {
+    private boolean setup(CommandSender sender, String[] args) {
         if (args.length != 3) {
-            sender.sendMessage("Usage: /mcmetrics setup <user id> <server id>");
+            sender.sendMessage(colorize("&cUsage: &f/mcmetrics setup <user id> <server id>"));
             sender.sendMessage("Get this command from the dashboard!");
             return true;
         }
@@ -139,6 +199,7 @@ public class MCMCommand implements CommandExecutor {
             plugin.getDataConfig().set("setup-complete", true);
             plugin.getMainConfig().forceReload();
             plugin.getDataConfig().forceReload();
+            plugin.getBansConfig().forceReload();
 
             CompletableFuture.supplyAsync(() -> {
                 LoggerUtil.debug("Setting server as setup...");

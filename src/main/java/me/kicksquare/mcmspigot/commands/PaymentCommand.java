@@ -87,7 +87,7 @@ public class PaymentCommand implements CommandExecutor {
             ArrayList<Experiment> experiments = plugin.getExperiments();
             for (Experiment experiment : experiments) {
                 if (experiment.trigger == ExperimentTrigger.PURCHASE) {
-                    ExperimentUtil.executeActions(p, experiment);
+                    ExperimentUtil.executeActions(p, experiment, -1);
                 }
             }
         }
