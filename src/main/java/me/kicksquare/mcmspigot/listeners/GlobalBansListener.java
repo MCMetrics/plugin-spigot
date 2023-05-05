@@ -49,10 +49,8 @@ public class GlobalBansListener implements Listener {
 
                         GlobalBansResponseEntry[] bans = mapper.readValue(response, GlobalBansResponseEntry[].class);
 
-                        System.out.println(3);
 
                         Bukkit.getScheduler().runTask(plugin, () -> {
-                            System.out.println(5);
                             // only ban if there is at least one entry with a reason that is enabled in the config
                             boolean shouldBan = false;
                             String reason = "";
@@ -90,8 +88,6 @@ public class GlobalBansListener implements Listener {
                                 return;
                             }
 
-                            System.out.println(4);
-
                             // run commands
                             List<String> commands = plugin.getBansConfig().getStringList("commands");
                             for (String rawCommand : commands) {
@@ -116,7 +112,6 @@ public class GlobalBansListener implements Listener {
                         });
 
                     } catch (JsonProcessingException exception) {
-                        System.out.println(1);
                         // if the message contains "Invalid user or server id", don't spam the console and just send one custom error
                         if (response.contains("Invalid user or server id")) {
                             LoggerUtil.severe("Error occurred while fetching player ban status: Invalid user or server id");
@@ -127,7 +122,6 @@ public class GlobalBansListener implements Listener {
                             LoggerUtil.severe("Error occurred while fetching player ban status: " + exception.getMessage());
                             exception.printStackTrace();
                         }
-                        System.out.println(2);
                     }
                 });
     }

@@ -28,7 +28,6 @@ botting: true # Botting/Spam Joining
 commands:
   - "ban ${player} You are globally banned for ${reason}!"
 
-
 # Discord Webhook Feature - automatically post to a Discord channel
 # when a player is blocked from logging in due to a Global Ban.
 # Available placeholders: ${player}, ${reason}, ${uuid}, ${ip}

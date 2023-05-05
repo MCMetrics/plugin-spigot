@@ -5,9 +5,14 @@ api-version: 1.17
 commands:
   mcmetrics:
     aliases: [ mcm, metrics ]
+    permission: mcmetrics.command
+    bans:
+      description: Access global bans data
+      permission: mcmetrics.bans
     description: MCMetrics main command
   /mcmetrics:
     description: MCMetrics main command
+    permission: mcmetrics.command
   mcmpayment:
     description: Internal command used to generate payment log [MCMetrics]
   mcmexperiment:
