@@ -6,13 +6,13 @@ import me.kicksquare.mcmspigot.MCMSpigot;
 public class SetupUtil {
 
     private static final MCMSpigot plugin = MCMSpigot.getPlugin();
-    static Config mainConfig = plugin.getMainConfig();
-    static Config dataConfig = plugin.getDataConfig();
-    static Config bansConfig = plugin.getBansConfig();
+    static final Config mainConfig = plugin.getMainConfig();
+    static final Config dataConfig = plugin.getDataConfig();
+    static final Config bansConfig = plugin.getBansConfig();
 
     public static boolean isSetup() {
         return dataConfig.getBoolean("setup-complete") &&
-                !(mainConfig.getString("server_id").equals("") || mainConfig.getString("uid") == "");
+                !(mainConfig.getString("server_id").equals("") || mainConfig.getString("uid").equals(""));
     }
 
     public static boolean shouldRecordSessions() {

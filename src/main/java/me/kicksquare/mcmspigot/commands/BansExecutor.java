@@ -13,6 +13,7 @@ import java.util.Date;
 
 import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
 
+@SuppressWarnings("StringConcatenationInLoop")
 public class BansExecutor {
     private static final MCMSpigot plugin = MCMSpigot.getPlugin();
 

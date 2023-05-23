@@ -16,12 +16,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
 
+@SuppressWarnings("SameReturnValue")
 public class MCMCommand implements CommandExecutor {
 
     private final MCMSpigot plugin;
@@ -32,7 +34,7 @@ public class MCMCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, String label, String[] args) {
         if (label.equals("/mcmetrics")) {
             if (sender instanceof ConsoleCommandSender && args.length == 3 && args[0].equals("setup")) {
                 return setup(sender, args);
@@ -67,7 +69,7 @@ public class MCMCommand implements CommandExecutor {
         } else if (args.length == 1 && args[0].equalsIgnoreCase("experiments")) {
             listExperiments(sender);
             return true;
-        } else if (args[0].equalsIgnoreCase("testexperiment")) {
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("testexperiment")) {
             return testExperiment(sender, args);
         } else if (args.length >= 1 && args[0].equalsIgnoreCase("bans")) {
             if (!plugin.getBansConfig().getBoolean("enabled")) {
@@ -120,6 +122,10 @@ public class MCMCommand implements CommandExecutor {
             if (e.name.equalsIgnoreCase(experimentName)) {
                 experiment = e;
                 break;
+            } else if (e.name.replaceAll(" ", "_").equalsIgnoreCase(experimentName)) {
+                // experiments with spaces in the name are replaced with underscores in this test command
+                experiment = e;
+                break;
             }
         }
 
@@ -145,11 +151,10 @@ public class MCMCommand implements CommandExecutor {
 
         if (selectedVariant == null) {
             sender.sendMessage(colorize("&cFailed to execute experiment! Please check the console for more information."));
-            return true;
         } else {
             sender.sendMessage(colorize("&aExperiment executed successfully!"));
-            return true;
         }
+        return true;
     }
 
     public static CompletableFuture<Boolean> reloadConfigAndFetchData() {
@@ -207,9 +212,7 @@ public class MCMCommand implements CommandExecutor {
                 LoggerUtil.debug("Fetching experiments...");
                 reloadConfigAndFetchData();
                 return true;
-            }).thenAccept((result) -> {
-                sender.sendMessage("Server configured successfully!");
-            });
+            }).thenAccept((result) -> sender.sendMessage("Server configured successfully!"));
 
             return true;
         }

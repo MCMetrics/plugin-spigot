@@ -3,6 +3,7 @@ package me.kicksquare.mcmspigot.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 public class MCMetricsTabCompleter implements TabCompleter {
     @Nullable
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         List<String> completions = new ArrayList<>();
 
         // todo better solution instead of nested ifs
@@ -26,26 +27,34 @@ public class MCMetricsTabCompleter implements TabCompleter {
             completions.add("help");
         } else if (args.length == 2) {
             // Complete second argument
-            if (args[0].equals("setup")) {
-                completions.add("<user id>");
-            } else if (args[0].equals("bans")) {
-                completions.add("add");
-                completions.add("lookup");
-            } else if (args[0].equals("testexperiment")) {
-                completions.add("<player name>");
+            switch (args[0]) {
+                case "setup":
+                    completions.add("<user id>");
+                    break;
+                case "bans":
+                    completions.add("add");
+                    completions.add("lookup");
+                    break;
+                case "testexperiment":
+                    completions.add("<player name>");
+                    break;
             }
         } else if (args.length == 3) {
             // Complete third argument
-            if (args[0].equals("setup")) {
-                completions.add("<server id>");
-            } else if (args[0].equals("bans")) {
-                if (args[1].equals("add")) {
-                    completions.add("<player name/uuid>");
-                } else if (args[1].equals("lookup")) {
-                    completions.add("<player name/uuid>");
-                }
-            } else if (args[0].equals("testexperiment")) {
-                completions.add("<experiment name>");
+            switch (args[0]) {
+                case "setup":
+                    completions.add("<server id>");
+                    break;
+                case "bans":
+                    if (args[1].equals("add")) {
+                        completions.add("<player name/uuid>");
+                    } else if (args[1].equals("lookup")) {
+                        completions.add("<player name/uuid>");
+                    }
+                    break;
+                case "testexperiment":
+                    completions.add("<experiment name>");
+                    break;
             }
         } else if (args.length == 4) {
             if (args[0].equals("bans") && args[1].equals("add")) {

@@ -29,7 +29,7 @@ public class ExperimentUtil {
      * @param p            The player to execute the actions on
      * @param experiment   The experiment to execute
      * @param variantIndex The variant index to execute. If -1, a random variant will be chosen
-     * @return
+     * @return The variant that was executed, or null if no variant was executed
      */
     public static ExperimentVariant executeActions(Player p, Experiment experiment, int variantIndex) {
         if (!plugin.getDataConfig().getBoolean("setup-complete")) return null;
@@ -154,9 +154,7 @@ public class ExperimentUtil {
                     break;
                 }
 
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacedPlaceholders);
-                }, delay);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacedPlaceholders), delay);
         }
 
         // save data to the player's session so that it is uploaded later
