@@ -9,6 +9,7 @@ import java.util.UUID;
 
 
 // this tracks sessions of users who are currently online
+@SuppressWarnings("CanBeFinal")
 public class SessionQueue {
 
     public Map<UUID, Session> sessionMap;

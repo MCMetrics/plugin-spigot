@@ -9,6 +9,7 @@ import me.kicksquare.mcmspigot.util.http.HttpUtil;
 import java.util.ArrayList;
 
 // this tracks sessions that are already finished (user logged off) to be uploaded in bulk later on
+@SuppressWarnings("CanBeFinal")
 public class UploadQueue {
     private static final ObjectMapper mapper = new ObjectMapper();
     private final MCMSpigot plugin;

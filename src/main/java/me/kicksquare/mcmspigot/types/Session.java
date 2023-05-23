@@ -15,7 +15,7 @@ public class Session {
     public String domain;
     public boolean firstSession = false;
 
-    public ArrayList<ExperimentSession> experimentSessions = new ArrayList<>(); // data about any ab tests during this session
+    public final ArrayList<ExperimentSession> experimentSessions = new ArrayList<>(); // data about any ab tests during this session
 
     public void startSessionNow(UUID uuid, String domain) {
         this.player_uuid = uuid.toString();
@@ -27,7 +27,6 @@ public class Session {
     }
 
     public void endSessionNow() {
-        // if uuid, join_time, domain, server id, or uid are null, throw an exception
         if (this.player_uuid == null || this.join_time == null || this.domain == null) {
             LoggerUtil.severe("Session is missing required fields!");
         }

@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -22,8 +23,9 @@ public class ExperimentCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings("ConstantValue")
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (sender instanceof Player) {
             sender.sendMessage("This command can only be run from the console.");
             return true;
@@ -42,6 +44,11 @@ public class ExperimentCommand implements CommandExecutor {
         final String playerName = args[0];
         final Player player = plugin.getServer().getPlayer(playerName);
 
+        if (player == null) {
+            sender.sendMessage("Player not found.");
+            return true;
+        }
+
         if (ExemptUtil.isExempt(player)) {
             sender.sendMessage("Player is exempt from experiments! You can update this in config.yml.");
             return true;
@@ -49,11 +56,6 @@ public class ExperimentCommand implements CommandExecutor {
 
         // args 2 and later are the experiment name
         final String experimentName = String.join(" ", args).substring(args[0].length() + 1);
-
-        if (player == null) {
-            sender.sendMessage("Player not found.");
-            return true;
-        }
 
         ArrayList<Experiment> experiments = plugin.getExperiments();
         for (Experiment experiment : experiments) {

@@ -84,9 +84,7 @@ public final class MCMSpigot extends JavaPlugin {
         MCMCommand.reloadConfigAndFetchData();
 
         // upload player count every 5 minutes
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            uploadPlayerCount();
-        }, 0, 20L * 60 * dataConfig.getInt("ping-interval"));
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::uploadPlayerCount, 0, 20L * 60 * dataConfig.getInt("ping-interval"));
 
         // enable bstats
         if (mainConfig.getBoolean("enable-bstats")) {

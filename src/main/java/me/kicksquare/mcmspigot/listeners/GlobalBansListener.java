@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GlobalBansListener implements Listener {
     private final MCMSpigot plugin;
@@ -131,7 +132,7 @@ public class GlobalBansListener implements Listener {
         placeholders.put("player", p.getName());
         placeholders.put("uuid", p.getUniqueId().toString());
         placeholders.put("reason", reason);
-        placeholders.put("ip", p.getAddress().getAddress().getHostAddress());
+        placeholders.put("ip", Objects.requireNonNull(p.getAddress()).getAddress().getHostAddress());
         StrSubstitutor strSubstitutor = new StrSubstitutor(placeholders, "${", "}");
 
         return strSubstitutor.replace(raw);

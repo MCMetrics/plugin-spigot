@@ -11,6 +11,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PapiExtension extends PlaceholderExpansion {
 
@@ -42,11 +43,13 @@ public class PapiExtension extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String params) {
+        if (player == null) return null;
+
         if (!player.isOnline()) {
             return null;
         }
 
-        if (ExemptUtil.isExempt(player.getPlayer())) return "ERR_PLAYER_EXEMPT";
+        if (ExemptUtil.isExempt(Objects.requireNonNull(player.getPlayer()))) return "ERR_PLAYER_EXEMPT";
 
         ArrayList<Experiment> experiments = plugin.getExperiments();
         for (Experiment experiment : experiments) {

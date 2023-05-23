@@ -9,17 +9,17 @@ import java.util.Date;
 
 public class PlayerPayment {
 
-    public String platform;
-    public String username;
-    public String transaction_id;
-    public String amount;
-    public String currency;
-    public String dateTime;
+    public final String platform;
+    public final String username;
+    public final String transaction_id;
+    public final String amount;
+    public final String currency;
+    public final String dateTime;
 
-    public String bedrockPrefix;
+    public final String bedrockPrefix;
 
-    public String uid;
-    public String server_id;
+    public final String uid;
+    public final String server_id;
 
     @JsonCreator
     public PlayerPayment(MCMSpigot plugin, String platform, String username, String transaction_id, String amount, String currency) {
