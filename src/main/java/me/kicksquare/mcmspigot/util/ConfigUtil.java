@@ -2,35 +2,6 @@ package me.kicksquare.mcmspigot.util;
 
 import de.leonhard.storage.Config;
 
-// FOR REFERENCE
-// BANS CONFIG
-//# Only set to true if you have been accepted to the Global Bans feature.
-//enabled: false
-//
-//# Reasons to auto-ban players for. If a player is banned,
-//# but the reason is set to false, nothing will happen. This
-//# only affects new bans; existing bans will still be enforced.
-//dupe: true # Duping items
-//lag: true # Building lag machines
-//discrimination: true # Discrimination
-//botting: true # Botting/Spam Joining
-//
-//
-//# Custom commands to run when a player is banned.
-//# Add your ban command(s) here.
-//# Available placeholders: ${player}, ${reason}, ${uuid}, ${ip}
-//# Example: "litebans:ban ${player} ${reason}"
-//commands:
-//  - "ban ${player} You are globally banned for ${reason}!"
-//
-//# Discord Webhook Feature - automatically post to a Discord channel
-//# when a player is blocked from logging in due to a Global Ban.
-//# Available placeholders: ${player}, ${reason}, ${uuid}, ${ip}
-//discord-webhook-enabled: false
-//discord-webhook-url: ""
-//discord-webhook-title: "Global Bans - Login Blocked"
-//discord-webhook-description: "${player} was blocked from logging in due to a global ban."
-
 public class ConfigUtil {
     public static void setConfigDefaults(Config mainConfig, Config dataConfig, Config bansConfig) {
         mainConfig.setDefault("server_id", "");
