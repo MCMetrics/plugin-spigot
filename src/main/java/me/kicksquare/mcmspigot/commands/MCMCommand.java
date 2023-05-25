@@ -6,6 +6,7 @@ import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentCondition;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentVariant;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentAction;
+import me.kicksquare.mcmspigot.util.ConfigUtil;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
 import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
@@ -161,8 +162,7 @@ public class MCMCommand implements CommandExecutor {
         return CompletableFuture.supplyAsync(() -> {
             LoggerUtil.debug("Reloading config...");
 
-            staticPlugin.getMainConfig().addDefaultsFromInputStream(staticPlugin.getResource("resources/config.yml"));
-
+            ConfigUtil.setConfigDefaults(staticPlugin.getMainConfig(), staticPlugin.getDataConfig(), staticPlugin.getBansConfig());
 
             staticPlugin.getMainConfig().forceReload();
             staticPlugin.getDataConfig().forceReload();
