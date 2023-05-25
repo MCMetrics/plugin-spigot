@@ -4,7 +4,7 @@
 setup-complete: false
 record-sessions: true
 record-pings: true
-ping-interval: 60
+ping-interval: 5
 record-payments: true
 execute-experiments: true
 bulk-session-threshold: 1

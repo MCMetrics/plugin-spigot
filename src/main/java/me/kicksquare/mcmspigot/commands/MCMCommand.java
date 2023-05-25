@@ -163,6 +163,7 @@ public class MCMCommand implements CommandExecutor {
 
             staticPlugin.getMainConfig().addDefaultsFromInputStream(staticPlugin.getResource("resources/config.yml"));
 
+
             staticPlugin.getMainConfig().forceReload();
             staticPlugin.getDataConfig().forceReload();
             staticPlugin.getBansConfig().forceReload();
@@ -212,7 +213,9 @@ public class MCMCommand implements CommandExecutor {
                 LoggerUtil.debug("Fetching experiments...");
                 reloadConfigAndFetchData();
                 return true;
-            }).thenAccept((result) -> sender.sendMessage("Server configured successfully!"));
+            }).thenAccept((result) -> {
+                sender.sendMessage("Server configured successfully!");
+            });
 
             return true;
         }
