@@ -15,7 +15,6 @@ import me.kicksquare.mcmspigot.papi.PapiExtension;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
-import me.kicksquare.mcmspigot.util.UploadQueue;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -81,7 +80,7 @@ public final class MCMSpigot extends JavaPlugin {
         getCommand("mcmexperiment").setExecutor(new ExperimentCommand(this));
         getCommand("mcmpayment").setExecutor(new PaymentCommand(this));
 
-        MCMCommand.reloadConfigAndFetchData();
+        MCMCommand.reloadConfigAndFetchTasks();
 
         // upload player count every 5 minutes
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::uploadPlayerCount, 0, 20L * 60 * dataConfig.getInt("ping-interval"));

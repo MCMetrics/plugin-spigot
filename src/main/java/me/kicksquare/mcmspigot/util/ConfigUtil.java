@@ -14,6 +14,21 @@ public class ConfigUtil {
         });
         mainConfig.setDefault("payment-fee", 0.00);
         mainConfig.setDefault("debug", false);
+        mainConfig.setDefault("ingame-stats", new String[]{
+                "&bCampaign Results for &e&l%campaign_name%",
+                "",
+                "· &bStart/End Date: &e%campaign_start_date% - %campaign_end_date% &7&o(%days% days)",
+                "· &bJoins: &e%total_joins%",
+                "· &bJoins/Day: &e%joins_per_day%",
+                "",
+                "· &bAd Spend: &e%ad_spend%",
+                "· &bRevenue: &e%total_revenue%",
+                "· &bROI: &c&l%roi%",
+                "",
+                "· &bUser Acquisition Cost: &e%uac%",
+                "· &bCustomer Acquisition Cost: &e%cac%",
+                "· &bAverage Revenue Per User: &e%arpu%"
+        });
 
         dataConfig.setDefault("setup-complete", false);
         dataConfig.setDefault("record-sessions", true);

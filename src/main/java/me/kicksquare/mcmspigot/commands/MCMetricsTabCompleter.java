@@ -22,7 +22,9 @@ public class MCMetricsTabCompleter implements TabCompleter {
             completions.add("bans");
             completions.add("reload");
             completions.add("uploadall");
+            completions.add("playerinfo");
             completions.add("experiments");
+            completions.add("campaigns");
             completions.add("testexperiment");
             completions.add("help");
         } else if (args.length == 2) {

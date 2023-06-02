@@ -1,11 +1,16 @@
 package me.kicksquare.mcmspigot.commands;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kicksquare.mcmspigot.MCMSpigot;
+import me.kicksquare.mcmspigot.SessionQueue;
+import me.kicksquare.mcmspigot.types.Session;
 import me.kicksquare.mcmspigot.types.TaskList;
 import me.kicksquare.mcmspigot.types.experiment.Experiment;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentCondition;
 import me.kicksquare.mcmspigot.types.experiment.ExperimentVariant;
 import me.kicksquare.mcmspigot.types.experiment.enums.ExperimentAction;
+import me.kicksquare.mcmspigot.types.stats.CampaignListItem;
 import me.kicksquare.mcmspigot.util.ConfigUtil;
 import me.kicksquare.mcmspigot.util.ExperimentUtil;
 import me.kicksquare.mcmspigot.util.LoggerUtil;
@@ -19,19 +24,49 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
+import static me.kicksquare.mcmspigot.util.CampaignStatsUtil.handleCampaignStats;
+import static me.kicksquare.mcmspigot.util.ClickableMessageUtil.sendClickableCommand;
 import static me.kicksquare.mcmspigot.util.ColorUtil.colorize;
 
 @SuppressWarnings("SameReturnValue")
 public class MCMCommand implements CommandExecutor {
 
-    private final MCMSpigot plugin;
     private static final MCMSpigot staticPlugin = MCMSpigot.getPlugin();
+    private final MCMSpigot plugin;
 
     public MCMCommand(MCMSpigot plugin) {
         this.plugin = plugin;
+    }
+
+    public static CompletableFuture<Boolean> reloadConfigAndFetchTasks() {
+        return CompletableFuture.supplyAsync(() -> {
+            LoggerUtil.debug("Reloading config...");
+
+            ConfigUtil.setConfigDefaults(staticPlugin.getMainConfig(), staticPlugin.getDataConfig(), staticPlugin.getBansConfig());
+
+            staticPlugin.getMainConfig().forceReload();
+            staticPlugin.getDataConfig().forceReload();
+            staticPlugin.getBansConfig().forceReload();
+
+            if (SetupUtil.isSetup()) {
+                LoggerUtil.debug("Server is set up! Fetching experiments and tasks...");
+
+                staticPlugin.getExperiments().clear();
+                ExperimentUtil.fetchExperiments();
+                TaskList.fetchTasks();
+            } else {
+                LoggerUtil.warning("Reloaded plugin, but the plugin is not configured! Please run /mcmetrics setup <user id> <server id> to configure the plugin.");
+            }
+
+            return true;
+        });
     }
 
     @Override
@@ -51,7 +86,7 @@ public class MCMCommand implements CommandExecutor {
 
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             sender.sendMessage(colorize("&e&lMCMetrics &r&7Reloading config..."));
-            reloadConfigAndFetchData().thenAccept((result) -> {
+            reloadConfigAndFetchTasks().thenAccept((result) -> {
                 plugin.uploadPlayerCount(); // manually force upload player count
                 if (result) {
                     sender.sendMessage(colorize("&a&lMCMetrics &r&7Reloaded successfully!"));
@@ -80,13 +115,27 @@ public class MCMCommand implements CommandExecutor {
 
             // returns false if the help message needs to be shown
             if (BansExecutor.executeBansSubcommand(sender, args)) return true;
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("campaigns")) {
+            printCampaigns(sender);
+            return true;
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("campaignstats")) {
+            String campaignId = args[1];
+            handleCampaignStats(sender, campaignId);
+            return true;
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("playerinfo")) {
+            String playerName = args[1];
+            sendPlayerInfo(sender, playerName);
+            return true;
         }
 
         sender.sendMessage(colorize("&e&lMCMetrics" + " &7Version: &f" + plugin.getDescription().getVersion()));
-        sender.sendMessage(colorize("&7Currently tracking &e&l" + plugin.getUploadQueue().getSize() + " &7sessions in the upload queue"));
+        sender.sendMessage(colorize("&7Currently tracking &e&l" + plugin.getSessionQueue().getQueueSize() + " &7sessions."));
+        sender.sendMessage(colorize("&e&l" + plugin.getUploadQueue().getSize() + " &7sessions queued for upload."));
         sender.sendMessage(colorize("&7Plugin Commands:"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics reload &7- Reloads the config"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics experiments &7- Lists all active experiments"));
+        sender.sendMessage(colorize("&7 • &b/mcmetrics campaigns &7- Lists campaigns. Click for statistics."));
+        sender.sendMessage(colorize("&7 • &b/mcmetrics playerinfo <player name> &7- Shows information about an online player."));
         sender.sendMessage(colorize("&7 • &b/mcmetrics setup <user id> <server id> &7- Automatically configures the plugin"));
         sender.sendMessage(colorize("&7 • &b/mcmetrics uploadall &7- Manually uploads all sessions in the upload queue - intended for testing."));
         sender.sendMessage(colorize("&7 • &b/mcmetrics testexperiment <player name> <experiment name> <variant> &7- Manually triggers an experiment with a set variant. Intended for testing."));
@@ -99,6 +148,50 @@ public class MCMCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    private void sendPlayerInfo(CommandSender sender, String playerName) {
+        // try to find the Player
+        Player player = Bukkit.getPlayer(playerName);
+        if (player == null) {
+            sender.sendMessage(colorize("&e&lMCMetrics &r&7Could not find player &f" + playerName + "&7."));
+            return;
+        }
+
+        // try to find the player in the session queue
+        SessionQueue sessionQueue = plugin.getSessionQueue();
+        Session session = sessionQueue.sessionMap.get(player.getUniqueId());
+        if (session == null) {
+            sender.sendMessage(colorize("&e&lMCMetrics &r&7Could not find player &f" + playerName + "&7 in the session queue."));
+            return;
+        }
+
+        String domain = session.domain;
+        boolean firstSession = session.firstSession;
+        // parses the date from the date string
+        String dateString = session.join_time;
+        Date joinTime;
+        try {
+            joinTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateString);
+        } catch (ParseException e) {
+            sender.sendMessage(colorize("&e&lMCMetrics &r&7Could not parse date string &f" + dateString + "&7."));
+            return;
+        }
+        // calculate the session duration
+        long sessionDuration = System.currentTimeMillis() - joinTime.getTime();
+
+        // convert sessionDuration to hours, minutes, and seconds
+        long hours = TimeUnit.MILLISECONDS.toHours(sessionDuration);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(sessionDuration) % 60;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(sessionDuration) % 60;
+
+        // format the sessionDurationString
+        String sessionDurationString = String.format("%d hours, %d minutes, %d seconds", hours, minutes, seconds);
+
+        sender.sendMessage(colorize("&e&lMCMetrics &r&7Player &f" + playerName + "&7 is currently online."));
+        sender.sendMessage(colorize("&7 • &7Join Domain: &f" + domain));
+        sender.sendMessage(colorize("&7 • &7First Session: &f" + firstSession));
+        sender.sendMessage(colorize("&7 • &7Current Session Duration: &f" + sessionDurationString));
     }
 
     private boolean testExperiment(CommandSender sender, String[] args) {
@@ -158,30 +251,6 @@ public class MCMCommand implements CommandExecutor {
         return true;
     }
 
-    public static CompletableFuture<Boolean> reloadConfigAndFetchData() {
-        return CompletableFuture.supplyAsync(() -> {
-            LoggerUtil.debug("Reloading config...");
-
-            ConfigUtil.setConfigDefaults(staticPlugin.getMainConfig(), staticPlugin.getDataConfig(), staticPlugin.getBansConfig());
-
-            staticPlugin.getMainConfig().forceReload();
-            staticPlugin.getDataConfig().forceReload();
-            staticPlugin.getBansConfig().forceReload();
-
-            if (SetupUtil.isSetup()) {
-                LoggerUtil.debug("Server is set up! Fetching experiments and tasks...");
-
-                staticPlugin.getExperiments().clear();
-                ExperimentUtil.fetchExperiments();
-                TaskList.fetchTasks();
-            } else {
-                LoggerUtil.warning("Reloaded plugin, but the plugin is not configured! Please run /mcmetrics setup <user id> <server id> to configure the plugin.");
-            }
-
-            return true;
-        });
-    }
-
     private boolean setup(CommandSender sender, String[] args) {
         if (args.length != 3) {
             sender.sendMessage(colorize("&cUsage: &f/mcmetrics setup <user id> <server id>"));
@@ -211,7 +280,7 @@ public class MCMCommand implements CommandExecutor {
                 LoggerUtil.debug("Setting server as setup...");
                 HttpUtil.makeAsyncGetRequest("api/server/setServerIsSetup", HttpUtil.getAuthHeadersFromConfig());
                 LoggerUtil.debug("Fetching experiments...");
-                reloadConfigAndFetchData();
+                reloadConfigAndFetchTasks();
                 return true;
             }).thenAccept((result) -> {
                 sender.sendMessage("Server configured successfully!");
@@ -296,5 +365,49 @@ public class MCMCommand implements CommandExecutor {
                 }
             }
         }
+    }
+
+    private void printCampaigns(CommandSender sender) {
+        sender.sendMessage(colorize("&7Fetching campaigns..."));
+
+        HttpUtil.makeAsyncGetRequest("api/campaigns/getServerCampaigns", HttpUtil.getAuthHeadersFromConfig()).thenAccept(response -> {
+            if (response != null) {
+                if (response.contains("NO_ACCESS")) {
+                    sender.sendMessage(colorize("&cOnly projects on the Growth plan can use campaigns."));
+                }
+
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    CampaignListItem[] results = mapper.readValue(response, CampaignListItem[].class);
+
+                    if (results.length == 0) {
+                        sender.sendMessage(colorize("&cNo campaigns found."));
+                    } else {
+                        sender.sendMessage(colorize("&7Found &e&l" + results.length + "&7 active campaigns:"));
+                        for (CampaignListItem result : results) {
+                            if (sender instanceof Player) {
+                                sendClickableCommand((Player) sender, "&7 • &a" + result.name + "&8&o (" + result.domain + ")", "mcmetrics campaignstats " + result.id);
+                            } else {
+                                sender.sendMessage(colorize("&7 • &a" + result.name + "&8&o (" + result.domain + "). Run &a/mcmetrics campaignstats " + result.id + "&8&o for more info."));
+                            }
+                        }
+                    }
+                } catch (JsonProcessingException exception) {
+                    // if the message contains "Invalid user or server id", don't spam the console and just send one custom error
+                    if (response.contains("Invalid user or server id")) {
+                        LoggerUtil.severe("Error occurred while fetching campaigns: Invalid user or server id");
+                        LoggerUtil.severe("Make sure your server is properly set up by running /mcmetrics setup");
+                        return;
+                    }
+                    if (plugin.getMainConfig().getBoolean("debug")) {
+                        LoggerUtil.severe("Error occurred while fetching campaigns: " + exception.getMessage());
+                        exception.printStackTrace();
+                    } else {
+                        LoggerUtil.severe("Error occurred while fetching campaigns: " + exception.getMessage());
+                        LoggerUtil.severe("Enable debug mode in config.yml for more information");
+                    }
+                }
+            }
+        });
     }
 }

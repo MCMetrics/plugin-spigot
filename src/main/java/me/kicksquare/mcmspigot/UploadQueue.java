@@ -1,9 +1,9 @@
-package me.kicksquare.mcmspigot.util;
+package me.kicksquare.mcmspigot;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.types.Session;
+import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.http.HttpUtil;
 
 import java.util.ArrayList;
