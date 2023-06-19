@@ -6,7 +6,7 @@
 
     <groupId>me.kicksquare</groupId>
     <artifactId>MCMetrics-Spigot</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <packaging>jar</packaging>
 
     <name>MCMetrics</name>

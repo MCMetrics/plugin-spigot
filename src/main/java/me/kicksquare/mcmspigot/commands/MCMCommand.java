@@ -105,7 +105,7 @@ public class MCMCommand implements CommandExecutor {
         } else if (args.length == 1 && args[0].equalsIgnoreCase("experiments")) {
             listExperiments(sender);
             return true;
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("testexperiment")) {
+        } else if (args.length == 4 && args[0].equalsIgnoreCase("testexperiment")) {
             return testExperiment(sender, args);
         } else if (args.length >= 1 && args[0].equalsIgnoreCase("bans")) {
             if (!plugin.getBansConfig().getBoolean("enabled")) {
