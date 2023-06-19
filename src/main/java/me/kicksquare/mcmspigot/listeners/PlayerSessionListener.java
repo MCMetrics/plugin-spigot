@@ -2,11 +2,11 @@ package me.kicksquare.mcmspigot.listeners;
 
 import me.kicksquare.mcmspigot.MCMSpigot;
 import me.kicksquare.mcmspigot.SessionQueue;
+import me.kicksquare.mcmspigot.UploadQueue;
 import me.kicksquare.mcmspigot.types.Session;
 import me.kicksquare.mcmspigot.util.ExemptUtil;
 import me.kicksquare.mcmspigot.util.LoggerUtil;
 import me.kicksquare.mcmspigot.util.SetupUtil;
-import me.kicksquare.mcmspigot.util.UploadQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -43,4 +43,8 @@ public class SessionQueue {
             plugin.getUploadQueue().addSession(session);
         }
     }
+
+    public int getQueueSize() {
+        return sessionMap.size();
+    }
 }

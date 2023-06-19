@@ -26,3 +26,24 @@ payment-fee: 0.00
 
 # Sends additional debug information to the console.
 debug: false
+
+
+# The output for in-game campaign stats
+# Available placeholders:%campaign_name%, %campaign_id%,
+#  %campaign_start_date%, %campaign_end_date%, %days%,
+#  %ad_spend%, %total_joins%, %joins_per_day%, %total_revenue%,
+#  %roi%, %uac%, %cac%, %arpu%
+ingame-stats:
+  - "&bCampaign Results for &e&l%campaign_name%"
+  - ""
+  - "· &bStart/End Date: &e%campaign_start_date% - %campaign_end_date% &7&o(%days% days)"
+  - "· &bJoins: &e%total_joins%"
+  - "· &bJoins/Day: &e%joins_per_day%"
+  - ""
+  - "· &bAd Spend: &e%ad_spend%"
+  - "· &bRevenue: &e%total_revenue%"
+  - "· &bROI: &c&l%roi%"
+  - ""
+  - "· &bUser Acquisition Cost: &e%uac%"
+  - "· &bCustomer Acquisition Cost: &e%cac%"
+  - "· &bAverage Revenue Per User: &e%arpu%"

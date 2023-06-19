@@ -140,6 +140,7 @@ public class ExperimentUtil {
                     p.performCommand(replacedPlaceholders);
                 }, delay);
 
+                break;
             case CHAT_MESSAGE:
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     // make sure player is still online
