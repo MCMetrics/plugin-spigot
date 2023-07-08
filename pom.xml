@@ -158,10 +158,10 @@
 
         <!--   io library (needed for discord webhooks)     -->
         <!-- https://mvnrepository.com/artifact/com.squareup.okio/okio -->
-        <dependency>
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio</artifactId>
-            <version>3.3.0</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.squareup.okio</groupId>-->
+        <!--            <artifactId>okio</artifactId>-->
+        <!--            <version>3.3.0</version>-->
+        <!--        </dependency>-->
     </dependencies>
 </project>

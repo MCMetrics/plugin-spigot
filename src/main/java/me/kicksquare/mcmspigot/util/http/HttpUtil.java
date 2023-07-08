@@ -92,9 +92,8 @@ public class HttpUtil {
 
             @Override
             public void onFailure(Request request, IOException e) {
-                LoggerUtil.severe("Request failed while making async request with request body " + request.body());
+                LoggerUtil.severe("Request failed while making async request with request body. Error: " + e.getMessage());
                 callRequestFuture.completeExceptionally(e);
-                throw new RuntimeException(e);
             }
 
             @Override
