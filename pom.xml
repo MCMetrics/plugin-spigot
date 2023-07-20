@@ -149,12 +149,12 @@
             <version>3.2.5</version>
         </dependency>
 
-        <!--        discord webhooks (global bans)-->
-        <dependency>
-            <groupId>club.minnced</groupId>
-            <artifactId>discord-webhooks</artifactId>
-            <version>0.8.2</version>
-        </dependency>
+        <!--        &lt;!&ndash;        discord webhooks (global bans)&ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>club.minnced</groupId>-->
+        <!--            <artifactId>discord-webhooks</artifactId>-->
+        <!--            <version>0.8.2</version>-->
+        <!--        </dependency>-->
 
         <!--   io library (needed for discord webhooks)     -->
         <!-- https://mvnrepository.com/artifact/com.squareup.okio/okio -->

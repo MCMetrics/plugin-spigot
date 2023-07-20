@@ -20,3 +20,5 @@ commands:
 
 
 softdepend: [ PlaceholderAPI, BuyCraftX, CraftingStore ]
+
+folia-supported: true
